@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "BBDU CSE Study Hub",
   description:
-    "B.Tech CSE Semester 1 learning hub — curated videos, structured notes, and progress tracking for all subjects.",
+    "B.Tech CSE Semester 1 — structured subjects, curated videos, and progress tracking.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} min-h-screen bg-background text-foreground font-sans antialiased`}>
         <div className="flex min-h-screen flex-col">
           <Navbar />
-          <main className="flex-1 pb-20 md:pb-0">{children}</main>
+          <main className="flex-1 pb-16 md:pb-0">{children}</main>
           <Footer />
           <MobileNav />
         </div>

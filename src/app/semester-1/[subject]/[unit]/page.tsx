@@ -3,18 +3,12 @@
 import { use } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TopicCard from "@/components/TopicCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
-import { cn } from "@/lib/utils";
-import type { Subject, Unit } from "@/data/types";
-
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function UnitPage({
   params,
@@ -35,7 +29,7 @@ export default function UnitPage({
   const completedCount = unit.topics.filter((t) => progress.completedTopics.includes(t.id)).length;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
@@ -46,39 +40,33 @@ export default function UnitPage({
       />
 
       {/* Header */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        className="mt-6 mb-10"
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 font-bold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 text-lg">
-            {unit.number}
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {unit.title}
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{subject.name}</p>
-          </div>
+      <div className="mt-6 mb-8">
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="text-xs font-medium text-muted tabular-nums">
+            Unit {String(unit.number).padStart(2, "0")}
+          </span>
+          <span className="text-muted">&middot;</span>
+          <span className="text-xs text-muted">{subject.name}</span>
         </div>
 
-        <p className="mb-4 text-gray-600 dark:text-gray-400">{unit.description}</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          {unit.title}
+        </h1>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <span className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" />
-            {unit.contactHours} contact hours
-          </span>
+        <p className="mt-2 text-[13px] text-muted">
+          {unit.description}
+        </p>
+
+        <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted">
+          <span>{unit.contactHours} contact hours</span>
           <span>{completedCount}/{unit.topics.length} topics completed</span>
           {unit.mappedCO.length > 0 && (
-            <span className="flex flex-wrap gap-1">
+            <span className="flex flex-wrap items-center gap-1">
               Maps to:{" "}
               {unit.mappedCO.map((co) => (
                 <span
                   key={co}
-                  className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                  className="rounded border border-border px-1 py-px text-[10px] font-medium text-muted"
                 >
                   {co}
                 </span>
@@ -87,23 +75,17 @@ export default function UnitPage({
           )}
         </div>
 
-        <div className="mt-6 max-w-md">
-          <ProgressBar value={completedCount} max={unit.topics.length} label="Unit Progress" size="sm" />
+        <div className="mt-4 max-w-sm">
+          <ProgressBar value={completedCount} max={unit.topics.length} size="sm" />
         </div>
-      </motion.div>
+      </div>
 
       {/* Topics */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={stagger}
-        className="mb-12"
-      >
-        <motion.h2 variants={fadeUp} className="mb-6 text-xl font-bold text-gray-900 dark:text-white">
+      <section className="mb-10">
+        <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
           Topics
-        </motion.h2>
-        <motion.div variants={fadeUp} className="space-y-3">
+        </h2>
+        <div className="border-t border-border">
           {unit.topics.map((topic, i) => (
             <TopicCard
               key={topic.id}
@@ -113,26 +95,20 @@ export default function UnitPage({
               index={i}
             />
           ))}
-        </motion.div>
-      </motion.section>
+        </div>
+      </section>
 
       {/* Prev / Next */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeUp}
-        className="flex items-center justify-between border-t border-gray-200 pt-8 dark:border-gray-800"
-      >
+      <div className="flex items-center justify-between border-t border-border pt-6">
         {prevUnit ? (
           <Link
             href={`/semester-1/${subjectId}/${prevUnit.id}`}
-            className="group flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            className="group flex items-center gap-2"
           >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className="h-4 w-4 text-muted transition-transform group-hover:-translate-x-0.5" />
             <div className="text-left">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Previous</div>
-              <div className="font-semibold">{prevUnit.title}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted">Previous</div>
+              <div className="text-[13px] font-medium text-foreground">{prevUnit.title}</div>
             </div>
           </Link>
         ) : (
@@ -142,18 +118,18 @@ export default function UnitPage({
         {nextUnit ? (
           <Link
             href={`/semester-1/${subjectId}/${nextUnit.id}`}
-            className="group flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            className="group flex items-center gap-2"
           >
             <div className="text-right">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Next</div>
-              <div className="font-semibold">{nextUnit.title}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted">Next</div>
+              <div className="text-[13px] font-medium text-foreground">{nextUnit.title}</div>
             </div>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" />
           </Link>
         ) : (
           <div />
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

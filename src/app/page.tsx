@@ -1,205 +1,167 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  BookOpen,
-  Video,
-  GraduationCap,
-  ChevronRight,
-  Layers,
-  FlaskConical,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { subjects } from "@/data/subjects";
-import SubjectCard from "@/components/SubjectCard";
+import { useProgress } from "@/hooks/useProgress";
 
 const theorySubjects = subjects.filter((s) => s.type === "theory");
 
-const quickLinks = [
-  { label: "Semester 1", href: "/semester-1", icon: BookOpen, color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
-  { label: "All Subjects", href: "/semester-1#subjects", icon: Layers, color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
-  { label: "C Programming", href: "/semester-1/computer-concepts-programming-c", icon: Video, color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
-  { label: "Calculus", href: "/semester-1/calculus", icon: GraduationCap, color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400" },
-];
-
-const steps = [
-  { num: 1, title: "Choose Subject", desc: "Browse all semester subjects with codes, credits, and categories.", icon: BookOpen },
-  { num: 2, title: "Select Unit", desc: "Each subject is broken into units mapped to course outcomes.", icon: Layers },
-  { num: 3, title: "Pick a Topic", desc: "Deep-dive into individual topics within each unit.", icon: FlaskConical },
-  { num: 4, title: "Watch & Learn", desc: "Curated YouTube videos — best ones marked recommended.", icon: Video },
-];
-
-const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
-
 export default function HomePage() {
+  const { progress } = useProgress();
+
+  const allTopics = subjects.flatMap((s) => s.units.flatMap((u) => u.topics));
+  const totalTopics = allTopics.length;
+  const completedTopics = progress.completedTopics.length;
+
+  const continueSubject = progress.startedSubjects.length > 0
+    ? subjects.find((s) => s.id === progress.startedSubjects[progress.startedSubjects.length - 1])
+    : null;
+
   return (
-    <div className="relative overflow-hidden">
-      {/* Hero */}
-      <section className="relative isolate px-4 pb-20 pt-16 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-400/5" />
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      {/* Header */}
+      <div className="mb-10">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted">
+          B.Tech CSE &middot; Semester 1 &middot; 2026&ndash;27
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+          Study Hub
+        </h1>
+        <p className="mt-1 text-[15px] text-muted">
+          Choose a subject. Watch the lesson. Track your progress.
+        </p>
+
+        <div className="mt-6">
+          <Link
+            href="/semester-1"
+            className="inline-flex items-center gap-2 rounded bg-accent px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover"
+          >
+            Explore Semester 1
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
         </div>
+      </div>
 
-        <div className="mx-auto max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-400"
-          >
-            <GraduationCap className="h-4 w-4" />
-            B.Tech CSE — 2026-27
-          </motion.div>
+      {/* Continue Learning */}
+      {completedTopics > 0 && (
+        <section className="mb-10">
+          <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
+            Continue Learning
+          </h2>
+          <div className="border-t border-border">
+            {continueSubject ? (
+              <Link
+                href={`/semester-1/${continueSubject.id}`}
+                className="group flex items-center justify-between py-3 transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6"
+              >
+                <div>
+                  <p className="text-[15px] font-medium text-foreground group-hover:text-accent">
+                    {continueSubject.name}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {continueSubject.code}
+                  </p>
+                </div>
+                <span className="text-xs text-muted tabular-nums">
+                  {completedTopics}/{totalTopics} completed
+                </span>
+              </Link>
+            ) : (
+              <div className="py-3 text-[13px] text-muted">
+                Start with your first subject
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl"
-          >
-            BBDU CSE{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
-              Study Hub
-            </span>
-          </motion.h1>
+      {/* Semester 1 Subjects */}
+      <section className="mb-10">
+        <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
+          Semester 1 &middot; Group 1 / Group A
+        </h2>
+        <div className="border-t border-border">
+          {theorySubjects.map((subject, i) => {
+            const totalTopics = subject.units.reduce((acc, u) => acc + u.topics.length, 0);
+            const subjectCompleted = subject.units
+              .flatMap((u) => u.topics)
+              .filter((t) => progress.completedTopics.includes(t.id)).length;
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400"
-          >
-            Your comprehensive learning companion for B.Tech CSE Semester I.
-            Structured subjects, curated videos, and progress tracking — all in one place.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-4"
-          >
-            <Link
-              href="/semester-1"
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-700 hover:shadow-blue-600/40"
-            >
-              Explore Semester 1
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/semester-1#subjects"
-              className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
-            >
-              View Subjects
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Quick Nav - visible immediately */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-2 gap-4 sm:grid-cols-4"
-        >
-          {quickLinks.map((link) => {
-            const Icon = link.icon;
             return (
-              <motion.div key={link.href} variants={fadeUp}>
-                <Link
-                  href={link.href}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-                >
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${link.color}`}>
-                    <Icon className="h-6 w-6" />
+              <Link
+                key={subject.id}
+                href={`/semester-1/${subject.id}`}
+                className="group flex items-center gap-4 border-b border-border py-3 transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6"
+              >
+                <span className="w-8 flex-shrink-0 text-right text-xs font-medium text-muted tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                <div className="min-w-0 flex-1">
+                  <span className="text-[15px] font-medium text-foreground group-hover:text-accent">
+                    {subject.name}
+                  </span>
+                  <div className="mt-0.5 flex items-center gap-2 text-xs text-muted">
+                    <span>{subject.code}</span>
+                    <span>&middot;</span>
+                    <span>{subject.credits} Credits</span>
+                    {totalTopics > 0 && (
+                      <>
+                        <span>&middot;</span>
+                        <span>{subjectCompleted}/{totalTopics} completed</span>
+                      </>
+                    )}
                   </div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{link.label}</span>
-                  <ChevronRight className="h-4 w-4 text-gray-400 transition-transform group-hover:translate-x-1 dark:text-gray-500" />
-                </Link>
-              </motion.div>
+                </div>
+
+                <span className="text-xs text-muted transition-transform group-hover:translate-x-0.5">
+                  &rarr;
+                </span>
+              </Link>
             );
           })}
-        </motion.div>
-      </section>
+        </div>
 
-      {/* Subject Preview - visible immediately */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-        >
-          <motion.div variants={fadeUp} className="mb-10 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Subjects in Semester I
-            </h2>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">
-              {theorySubjects.length} theory subjects across BSC, ESC, and PCC categories
-            </p>
-          </motion.div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {theorySubjects.map((subject) => (
-              <motion.div key={subject.id} variants={fadeUp}>
-                <SubjectCard subject={subject} />
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div variants={fadeUp} className="mt-8 text-center">
-            <Link
-              href="/semester-1"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-            >
-              View all {subjects.length} subjects
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </motion.div>
-        </motion.div>
+        <div className="mt-4">
+          <Link
+            href="/semester-1"
+            className="text-xs font-medium text-accent hover:text-accent-hover"
+          >
+            View all {subjects.length} subjects
+          </Link>
+        </div>
       </section>
 
       {/* How It Works */}
-      <section className="border-t border-gray-200 bg-gray-50 py-20 dark:border-gray-800 dark:bg-gray-950">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="text-center"
-          >
-            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-gray-900 dark:text-white">
-              How It Works
-            </motion.h2>
-
-            <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {steps.map((step) => {
-                const Icon = step.icon;
-                return (
-                  <motion.div key={step.num} variants={fadeUp} className="text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-900/30">
-                      <Icon className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div className="mb-1 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                      Step {step.num}
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{step.title}</h3>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{step.desc}</p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
+      <section className="mb-10 border-t border-border pt-8">
+        <h2 className="mb-4 text-xs font-medium uppercase tracking-wider text-muted">
+          How It Works
+        </h2>
+        <div className="grid grid-cols-2 gap-4 text-[13px] sm:grid-cols-4">
+          <div>
+            <span className="font-medium text-foreground">Choose subject</span>
+            <p className="mt-0.5 text-xs text-muted">Browse all semester subjects</p>
+          </div>
+          <div>
+            <span className="font-medium text-foreground">Pick a unit</span>
+            <p className="mt-0.5 text-xs text-muted">Each unit maps to course outcomes</p>
+          </div>
+          <div>
+            <span className="font-medium text-foreground">Watch lesson</span>
+            <p className="mt-0.5 text-xs text-muted">Curated YouTube videos</p>
+          </div>
+          <div>
+            <span className="font-medium text-foreground">Track progress</span>
+            <p className="mt-0.5 text-xs text-muted">Mark topics as completed</p>
+          </div>
         </div>
       </section>
 
       {/* Disclaimer */}
-      <section className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <p className="text-sm text-gray-500 dark:text-gray-500">
-          This is a student-built learning resource. Always verify academic information
-          with official BBDU sources. Video links are curated from public YouTube channels.
+      <section className="border-t border-border pt-6">
+        <p className="text-xs text-muted">
+          Student-built learning resource. Always verify academic information with official BBDU sources.
         </p>
       </section>
     </div>

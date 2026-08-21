@@ -1,9 +1,8 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import { notFound } from "next/navigation";
-import { motion } from "framer-motion";
-import { BookOpen, Clock, Award, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { labExperiments } from "@/data/labExperiments";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -11,12 +10,7 @@ import UnitCard from "@/components/UnitCard";
 import ExperimentCard from "@/components/ExperimentCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
-import { getCategoryColor, getCategoryLabel, cn } from "@/lib/utils";
-import { useState } from "react";
-import type { Subject } from "@/data/types";
-
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
+import { getCategoryLabel } from "@/lib/utils";
 
 export default function SubjectPage({ params }: { params: Promise<{ subject: string }> }) {
   const { subject: subjectId } = use(params);
@@ -32,7 +26,7 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
     .filter((t) => progress.completedTopics.includes(t.id)).length;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
@@ -42,94 +36,66 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
       />
 
       {/* Header */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        className="mt-6 mb-10"
-      >
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium", getCategoryColor(subject.category))}>
+      <div className="mt-6 mb-8">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-medium text-muted">
             {getCategoryLabel(subject.category)}
           </span>
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            {subject.code}
-          </span>
+          <span className="text-muted">&middot;</span>
+          <span className="text-xs text-muted">{subject.code}</span>
           {subject.type === "lab" && (
-            <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-              Lab
-            </span>
+            <>
+              <span className="text-muted">&middot;</span>
+              <span className="text-xs text-muted">Lab</span>
+            </>
           )}
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           {subject.name}
         </h1>
 
-        <div className="mt-4 flex flex-wrap items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
-          <span className="flex items-center gap-1.5">
-            <Award className="h-4 w-4" />
-            {subject.credits} Credits
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" />
-            {subject.lectureHours}L {subject.tutorialHours}T {subject.practicalHours}P
-          </span>
+        <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted">
+          <span>{subject.credits} Credits</span>
+          <span>{subject.lectureHours}L {subject.tutorialHours}T {subject.practicalHours}P</span>
           {totalTopics > 0 && (
-            <span className="flex items-center gap-1.5">
-              <BookOpen className="h-4 w-4" />
-              {completedTopics}/{totalTopics} topics
-            </span>
+            <span>{completedTopics}/{totalTopics} topics completed</span>
           )}
         </div>
 
         {totalTopics > 0 && (
-          <div className="mt-6 max-w-md">
-            <ProgressBar value={completedTopics} max={totalTopics} label="Subject Progress" size="md" />
+          <div className="mt-4 max-w-sm">
+            <ProgressBar value={completedTopics} max={totalTopics} size="sm" />
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Objectives */}
       {subject.objectives.length > 0 && <ObjectivesSection objectives={subject.objectives} />}
 
       {/* Outcomes */}
       {subject.outcomes.length > 0 && (
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="mb-12"
-        >
-          <motion.h2 variants={fadeUp} className="mb-4 text-xl font-bold text-gray-900 dark:text-white">
+        <section className="mb-8">
+          <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
             Course Outcomes
-          </motion.h2>
-          <div className="grid gap-3 sm:grid-cols-2">
+          </h2>
+          <div className="border-t border-border">
             {subject.outcomes.map((outcome, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
-              >
-                <p className="text-sm text-gray-700 dark:text-gray-300">{outcome}</p>
-              </motion.div>
+              <div key={i} className="border-b border-border py-2">
+                <p className="text-[13px] text-foreground">{outcome}</p>
+              </div>
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
 
       {/* Units (theory) */}
       {subject.type === "theory" && subject.units.length > 0 && (
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="mb-12"
-        >
-          <motion.h2 variants={fadeUp} className="mb-6 text-xl font-bold text-gray-900 dark:text-white">
-            Units
-          </motion.h2>
-          <motion.div variants={fadeUp} className="space-y-4">
+        <section className="mb-8">
+          <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
+            Course Content
+          </h2>
+          <div className="border-t border-border">
             {subject.units.map((unit) => (
               <UnitCard
                 key={unit.id}
@@ -138,27 +104,22 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
                 completedTopics={progress.completedTopics}
               />
             ))}
-          </motion.div>
-        </motion.section>
+          </div>
+        </section>
       )}
 
       {/* Experiments (lab) */}
       {subject.type === "lab" && experiments.length > 0 && (
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="mb-12"
-        >
-          <motion.h2 variants={fadeUp} className="mb-6 text-xl font-bold text-gray-900 dark:text-white">
+        <section className="mb-8">
+          <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
             Lab Experiments
-          </motion.h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          </h2>
+          <div className="border-t border-border">
             {experiments.map((exp, i) => (
               <ExperimentCard key={exp.id} experiment={exp} index={i} />
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
     </div>
   );
@@ -168,31 +129,29 @@ function ObjectivesSection({ objectives }: { objectives: string[] }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={fadeUp}
-      className="mb-10 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
-    >
+    <section className="mb-8">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+        className="flex w-full items-center justify-between py-3 text-left transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6"
       >
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Course Objectives</h2>
-        {open ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
+        <h2 className="text-xs font-medium uppercase tracking-wider text-muted">
+          Course Objectives
+        </h2>
+        {open ? (
+          <ChevronUp className="h-4 w-4 text-muted" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-muted" />
+        )}
       </button>
       {open && (
-        <div className="border-t border-gray-100 px-5 pb-5 pt-4 dark:border-gray-800">
-          <ul className="space-y-2">
-            {objectives.map((obj, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <span className="mt-0.5 flex-shrink-0 text-blue-500">•</span>
-                {obj}
-              </li>
-            ))}
-          </ul>
+        <div className="border-t border-border">
+          {objectives.map((obj, i) => (
+            <div key={i} className="border-b border-border py-2">
+              <p className="text-[13px] text-foreground">{obj}</p>
+            </div>
+          ))}
         </div>
       )}
-    </motion.div>
+    </section>
   );
 }

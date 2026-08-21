@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, CheckCircle2, Circle } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import type { Unit } from "@/data/types";
 import { cn } from "@/lib/utils";
 import TopicCard from "./TopicCard";
@@ -24,72 +23,65 @@ export default function UnitCard({ unit, subjectId, completedTopics }: UnitCardP
     : 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+    <div className="border-b border-border">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-4 p-5 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+        className="flex w-full items-center gap-3 py-3 text-left transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6"
       >
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100 font-bold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-          {unit.number}
-        </div>
+        <span className="w-8 flex-shrink-0 text-right text-xs font-medium text-muted tabular-nums">
+          {String(unit.number).padStart(2, "0")}
+        </span>
 
         <div className="min-w-0 flex-1">
-          <h3 className="font-semibold text-gray-900 dark:text-white">
-            {unit.title}
-          </h3>
-          <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
-            {unit.topics.length} topics &middot; {progress}% complete
-          </p>
+          <div className="flex items-baseline justify-between gap-2">
+            <h3 className="truncate text-[15px] font-medium text-foreground">
+              {unit.title}
+            </h3>
+            <span className="flex-shrink-0 text-xs tabular-nums text-muted">
+              {completedCount}/{unit.topics.length}
+            </span>
+          </div>
 
-          <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
-            <motion.div
-              className="h-full rounded-full bg-blue-600 dark:bg-blue-500"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5 }}
+          <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-border">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-500 ease-out",
+                progress === 100 ? "bg-success" : "bg-accent"
+              )}
+              style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        <motion.div
-          animate={{ rotate: expanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <ChevronDown className="h-5 w-5 text-gray-400" />
-        </motion.div>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 flex-shrink-0 text-muted transition-transform duration-200",
+            expanded && "rotate-180"
+          )}
+        />
       </button>
 
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <div className="space-y-3 border-t border-gray-100 px-5 pb-5 pt-4 dark:border-gray-800">
-              {unit.topics.map((topic, i) => (
-                <TopicCard
-                  key={topic.id}
-                  topic={topic}
-                  subjectId={subjectId}
-                  unitId={unit.id}
-                  index={i}
-                />
-              ))}
+      {expanded && (
+        <div className="space-y-0 border-t border-border/50 pb-2">
+          {unit.topics.map((topic, i) => (
+            <TopicCard
+              key={topic.id}
+              topic={topic}
+              subjectId={subjectId}
+              unitId={unit.id}
+              index={i}
+            />
+          ))}
 
-              <Link
-                href={`/semester-1/${subjectId}/${unit.id}`}
-                className="mt-2 flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-              >
-                View full unit
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <Link
+            href={`/semester-1/${subjectId}/${unit.id}`}
+            className="ml-11 mt-1 flex items-center gap-1 py-2 text-xs font-medium text-accent hover:text-accent-hover"
+          >
+            View full unit
+            <ChevronRight className="h-3 w-3" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

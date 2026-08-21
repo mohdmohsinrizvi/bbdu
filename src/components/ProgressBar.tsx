@@ -1,64 +1,54 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ProgressBarProps {
   value: number;
   max?: number;
   label?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md";
+  showPercentage?: boolean;
 }
-
-const sizeClasses = {
-  sm: "h-1.5",
-  md: "h-2.5",
-  lg: "h-4",
-};
 
 export default function ProgressBar({
   value,
   max = 100,
   label,
   size = "md",
+  showPercentage = true,
 }: ProgressBarProps) {
   const percentage = Math.min(Math.round((value / max) * 100), 100);
 
   return (
     <div className="w-full">
-      {label && (
-        <div className="mb-1.5 flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {label}
-          </span>
-          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-            {percentage}%
-          </span>
+      {(label || showPercentage) && (
+        <div className="mb-1 flex items-center justify-between">
+          {label && (
+            <span className="text-xs font-medium text-muted">
+              {label}
+            </span>
+          )}
+          {showPercentage && (
+            <span className="text-xs font-medium tabular-nums text-foreground">
+              {percentage}%
+            </span>
+          )}
         </div>
       )}
       <div
         className={cn(
-          "w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800",
-          sizeClasses[size]
+          "w-full overflow-hidden rounded-full bg-border",
+          size === "sm" ? "h-1" : "h-1.5"
         )}
       >
-        <motion.div
+        <div
           className={cn(
-            "h-full rounded-full",
-            percentage === 100
-              ? "bg-emerald-500"
-              : "bg-blue-600 dark:bg-blue-500"
+            "h-full rounded-full transition-all duration-500 ease-out",
+            percentage === 100 ? "bg-success" : "bg-accent"
           )}
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          style={{ width: `${percentage}%` }}
         />
       </div>
-      {!label && (
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          {percentage}% complete
-        </p>
-      )}
     </div>
   );
 }

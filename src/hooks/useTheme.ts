@@ -4,14 +4,23 @@ import { useState, useEffect, useCallback } from "react";
 
 type Theme = "light" | "dark" | "system";
 
-export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "system";
+  return (localStorage.getItem("bbdu-theme") as Theme) || "system";
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem("bbdu-theme") as Theme | null;
-    if (stored) setThemeState(stored);
-  }, []);
+function resolveIsDark(theme: Theme): boolean {
+  if (typeof window === "undefined") return false;
+  if (theme === "dark") return true;
+  if (theme === "light") return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+export function useTheme() {
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() =>
+    resolveIsDark(getInitialTheme()) ? "dark" : "light"
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

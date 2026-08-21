@@ -3,7 +3,6 @@
 import { use, useState } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle2, Circle } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { videos } from "@/data/videos";
@@ -12,9 +11,6 @@ import VideoPlayer from "@/components/VideoPlayer";
 import VideoCard from "@/components/VideoCard";
 import { useProgress } from "@/hooks/useProgress";
 import type { Video } from "@/data/types";
-
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
-const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 export default function TopicPage({
   params,
@@ -25,7 +21,7 @@ export default function TopicPage({
   const subject = subjects.find((s) => s.id === subjectId);
   const unit = subject?.units.find((u) => u.id === unitId);
   const topic = unit?.topics.find((t) => t.id === topicId);
-  const { progress, toggleTopic, isTopicCompleted } = useProgress();
+  const { toggleTopic, isTopicCompleted } = useProgress();
 
   if (!subject || !unit || !topic) notFound();
 
@@ -44,7 +40,7 @@ export default function TopicPage({
   const completed = isTopicCompleted(topicId);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
@@ -55,75 +51,72 @@ export default function TopicPage({
         ]}
       />
 
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mt-6 mb-10">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="mt-6 mb-8">
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="text-xs font-medium text-muted tabular-nums">
+            Unit {String(unit.number).padStart(2, "0")}
+          </span>
+          <span className="text-muted">&middot;</span>
+          <span className="text-xs text-muted">{topic.orderIndex}</span>
+        </div>
+
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           {topic.title}
         </h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">{topic.description}</p>
-      </motion.div>
+
+        <p className="mt-2 text-[13px] text-muted">
+          {topic.description}
+        </p>
+      </div>
 
       {/* Main Video */}
       {activeVideo && activeVideo.youtubeId ? (
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10">
+        <div className="mb-8">
           <VideoPlayer
             youtubeId={activeVideo.youtubeId}
             title={activeVideo.title}
             channel={activeVideo.channel}
           />
-        </motion.div>
+        </div>
       ) : (
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          className="mb-10 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-12 text-center dark:border-gray-700 dark:bg-gray-900"
-        >
-          <p className="text-gray-500 dark:text-gray-400">
+        <div className="mb-8 rounded border border-dashed border-border p-10 text-center">
+          <p className="text-[13px] text-muted">
             No video available for this topic yet.
           </p>
-          <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
-            Check back later or explore the videos below.
-          </p>
-        </motion.div>
+        </div>
       )}
 
       {/* Mark as completed */}
-      <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10">
+      <div className="mb-8">
         <button
           onClick={() => toggleTopic(topicId)}
-          className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors ${
+          className={`inline-flex items-center gap-2 rounded border px-4 py-2 text-[13px] font-medium transition-colors ${
             completed
-              ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              ? "border-success/30 bg-success/10 text-success"
+              : "border-border bg-surface text-muted hover:text-foreground"
           }`}
         >
           {completed ? (
             <>
-              <CheckCircle2 className="h-5 w-5" />
+              <CheckCircle2 className="h-4 w-4" />
               Completed
             </>
           ) : (
             <>
-              <Circle className="h-5 w-5" />
+              <Circle className="h-4 w-4" />
               Mark as completed
             </>
           )}
         </button>
-      </motion.div>
+      </div>
 
       {/* Related Videos */}
       {topicVideos.length > 1 && (
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={stagger}
-          className="mb-12"
-        >
-          <motion.h2 variants={fadeUp} className="mb-4 text-lg font-bold text-gray-900 dark:text-white">
+        <section className="mb-10">
+          <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
             Related Videos
-          </motion.h2>
-          <motion.div variants={fadeUp} className="space-y-3">
+          </h2>
+          <div className="space-y-2">
             {topicVideos.map((v) => (
               <VideoCard
                 key={v.id}
@@ -132,27 +125,21 @@ export default function TopicPage({
                 isActive={activeVideo?.id === v.id}
               />
             ))}
-          </motion.div>
-        </motion.section>
+          </div>
+        </section>
       )}
 
       {/* Prev / Next Topic */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeUp}
-        className="flex items-center justify-between border-t border-gray-200 pt-8 dark:border-gray-800"
-      >
+      <div className="flex items-center justify-between border-t border-border pt-6">
         {prevTopic ? (
           <Link
             href={`/semester-1/${subjectId}/${unitId}/${prevTopic.id}`}
-            className="group flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            className="group flex items-center gap-2"
           >
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className="h-4 w-4 text-muted transition-transform group-hover:-translate-x-0.5" />
             <div className="text-left">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Previous</div>
-              <div className="font-semibold">{prevTopic.title}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted">Previous</div>
+              <div className="text-[13px] font-medium text-foreground">{prevTopic.title}</div>
             </div>
           </Link>
         ) : (
@@ -162,18 +149,18 @@ export default function TopicPage({
         {nextTopic ? (
           <Link
             href={`/semester-1/${subjectId}/${unitId}/${nextTopic.id}`}
-            className="group flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50"
+            className="group flex items-center gap-2"
           >
             <div className="text-right">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Next</div>
-              <div className="font-semibold">{nextTopic.title}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted">Next</div>
+              <div className="text-[13px] font-medium text-foreground">{nextTopic.title}</div>
             </div>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" />
           </Link>
         ) : (
           <div />
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

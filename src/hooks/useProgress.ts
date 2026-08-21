@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 interface ProgressData {
   completedTopics: string[];
@@ -10,7 +10,7 @@ interface ProgressData {
 
 const STORAGE_KEY = "bbdu-study-hub-progress";
 
-function getProgress(): ProgressData {
+function getInitialProgress(): ProgressData {
   if (typeof window === "undefined") {
     return { completedTopics: [], completedVideos: [], startedSubjects: [] };
   }
@@ -27,15 +27,7 @@ function saveProgress(data: ProgressData) {
 }
 
 export function useProgress() {
-  const [progress, setProgress] = useState<ProgressData>({
-    completedTopics: [],
-    completedVideos: [],
-    startedSubjects: [],
-  });
-
-  useEffect(() => {
-    setProgress(getProgress());
-  }, []);
+  const [progress, setProgress] = useState<ProgressData>(getInitialProgress);
 
   const toggleTopic = useCallback((topicId: string) => {
     setProgress((prev) => {

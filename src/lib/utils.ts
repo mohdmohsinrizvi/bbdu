@@ -23,16 +23,6 @@ export function extractYoutubeId(url: string): string | null {
   return null;
 }
 
-export function getCategoryColor(category: string): string {
-  switch (category) {
-    case "BSC": return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-    case "ESC": return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300";
-    case "GP": return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
-    case "PCC": return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
-    default: return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
-  }
-}
-
 export function getCategoryLabel(category: string): string {
   switch (category) {
     case "BSC": return "Basic Science";

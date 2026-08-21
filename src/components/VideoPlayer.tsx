@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Play, ExternalLink } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface VideoPlayerProps {
   youtubeId: string;
@@ -38,7 +36,7 @@ export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerPr
 
   return (
     <div ref={containerRef} className="w-full">
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-900">
+      <div className="relative aspect-video w-full overflow-hidden rounded border border-border bg-foreground/5">
         {loaded ? (
           <iframe
             src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
@@ -59,25 +57,21 @@ export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerPr
                 }}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-800">
-                <div className="h-12 w-12 animate-pulse rounded-full bg-gray-700" />
+              <div className="flex h-full w-full items-center justify-center">
+                <div className="h-10 w-10 animate-pulse rounded-full bg-border" />
               </div>
             )}
 
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/30" />
 
             <button
               onClick={() => setLoaded(true)}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105"
             >
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 shadow-lg"
-              >
-                <Play className="h-7 w-7 fill-white text-white" />
-              </motion.div>
-              <span className="text-sm font-medium text-white drop-shadow">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-600 shadow-lg">
+                <Play className="h-5 w-5 fill-white text-white" />
+              </div>
+              <span className="text-xs font-medium text-white/90">
                 Click to play
               </span>
             </button>
@@ -85,18 +79,18 @@ export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerPr
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">{title}</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{channel}</p>
+          <h3 className="text-sm font-medium text-foreground">{title}</h3>
+          <p className="text-xs text-muted">{channel}</p>
         </div>
         <a
           href={`https://www.youtube.com/watch?v=${youtubeId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
         >
-          <ExternalLink className="h-4 w-4" />
+          <ExternalLink className="h-3 w-3" />
           YouTube
         </a>
       </div>
