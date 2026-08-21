@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Circle } from "lucide-react";
+import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
 import type { Topic } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { cn } from "@/lib/utils";
@@ -13,15 +13,20 @@ interface TopicCardProps {
   index: number;
 }
 
-export default function TopicRow({ topic, subjectId, unitId, index }: TopicCardProps) {
+export default function TopicRow({
+  topic,
+  subjectId,
+  unitId,
+  index,
+}: TopicCardProps) {
   const { isTopicCompleted, toggleTopic } = useProgress();
   const completed = isTopicCompleted(topic.id);
 
   return (
     <div
       className={cn(
-        "flex items-center gap-3 py-2 pl-11 pr-4 -mx-4 px-4 sm:-mx-6 sm:px-6 transition-colors hover:bg-surface-hover/50",
-        completed && "bg-success/5"
+        "group flex items-center gap-3 py-3 pl-12 pr-4 -mx-4 px-4 sm:-mx-6 sm:px-6 transition-all hover:bg-surface-hover/50",
+        completed && "bg-success/[0.03]"
       )}
     >
       <button
@@ -29,13 +34,13 @@ export default function TopicRow({ topic, subjectId, unitId, index }: TopicCardP
           e.preventDefault();
           toggleTopic(topic.id);
         }}
-        className="flex-shrink-0"
+        className="flex-shrink-0 transition-transform hover:scale-110"
         aria-label={completed ? "Mark as incomplete" : "Mark as complete"}
       >
         {completed ? (
-          <CheckCircle2 className="h-4 w-4 text-success" />
+          <CheckCircle2 className="h-5 w-5 text-success" />
         ) : (
-          <Circle className="h-4 w-4 text-muted/40 transition-colors hover:text-muted" />
+          <Circle className="h-5 w-5 text-border-strong transition-colors hover:text-muted" />
         )}
       </button>
 
@@ -43,17 +48,24 @@ export default function TopicRow({ topic, subjectId, unitId, index }: TopicCardP
         href={`/semester-1/${subjectId}/${unitId}/${topic.id}`}
         className="min-w-0 flex-1"
       >
-        <span className={cn(
-          "text-[13px] font-medium transition-colors",
-          completed ? "text-muted line-through" : "text-foreground hover:text-accent"
-        )}>
+        <span
+          className={cn(
+            "text-[14px] font-semibold transition-colors",
+            completed
+              ? "text-muted line-through decoration-border"
+              : "text-foreground group-hover:text-accent"
+          )}
+        >
           {topic.title}
         </span>
+        {topic.description && (
+          <p className="mt-0.5 text-xs text-muted line-clamp-1">
+            {topic.description}
+          </p>
+        )}
       </Link>
 
-      <span className="text-xs text-muted/50 tabular-nums">
-        {String(index + 1).padStart(2, "0")}
-      </span>
+      <ArrowRight className="h-4 w-4 flex-shrink-0 text-border-strong opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:text-accent" />
     </div>
   );
 }

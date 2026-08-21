@@ -4,14 +4,22 @@ import SearchBar from "@/components/SearchBar";
 
 export default function SearchPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="mb-1 text-2xl font-semibold tracking-tight text-foreground">
-        Search
-      </h1>
-      <p className="mb-6 text-sm text-muted">
-        Find subjects, units, and topics.
-      </p>
-      <SearchBar />
+    <div>
+      <section className="hero-gradient-subtle relative overflow-hidden">
+        <div className="grid-bg absolute inset-0 opacity-50" />
+        <div className="relative z-10 mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
+            Search
+          </h1>
+          <p className="mt-2 text-sm text-white/60">
+            Find subjects, units, and topics.
+          </p>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <SearchBar />
+      </div>
     </div>
   );
 }

@@ -63,13 +63,16 @@ export default function SearchBar() {
       }
     }
 
-    setResults(found.slice(0, 8));
+    setResults(found.slice(0, 10));
     setActiveIndex(-1);
   }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -86,17 +89,25 @@ export default function SearchBar() {
       setActiveIndex((prev) => Math.max(prev - 1, -1));
     } else if (e.key === "Enter" && activeIndex >= 0) {
       e.preventDefault();
-      const link = document.querySelector(`[data-result="${activeIndex}"]`) as HTMLAnchorElement;
+      const link = document.querySelector(
+        `[data-result="${activeIndex}"]`
+      ) as HTMLAnchorElement;
       if (link) link.click();
     } else if (e.key === "Escape") {
       setOpen(false);
     }
   };
 
+  const typeColors = {
+    subject: "bg-accent/10 text-accent",
+    unit: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    topic: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  };
+
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
         <input
           ref={inputRef}
           type="text"
@@ -109,7 +120,7 @@ export default function SearchBar() {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search subjects, units, topics..."
-          className="w-full rounded-sm border border-border bg-surface py-2 pl-9 pr-9 text-[13px] text-foreground outline-none transition-colors focus:border-accent/40"
+          className="w-full rounded-xl border border-border bg-surface py-3 pl-11 pr-10 text-[14px] text-foreground outline-none transition-all focus:border-accent/40 focus:shadow-lg focus:shadow-accent/5"
         />
         {query && (
           <button
@@ -118,15 +129,15 @@ export default function SearchBar() {
               setResults([]);
               inputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </button>
         )}
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full z-50 mt-1 w-full overflow-hidden rounded-sm border border-border bg-surface shadow-sm">
+        <div className="absolute top-full z-50 mt-2 w-full overflow-hidden rounded-xl border border-border bg-surface shadow-xl shadow-black/5">
           {results.map((result, index) => (
             <Link
               key={result.href}
@@ -134,21 +145,26 @@ export default function SearchBar() {
               data-result={index}
               onClick={() => setOpen(false)}
               className={cn(
-                "flex flex-col px-3 py-2 transition-colors",
+                "flex flex-col px-4 py-3 transition-colors border-b border-border/50 last:border-0",
                 index === activeIndex
                   ? "bg-accent/5"
                   : "hover:bg-surface-hover"
               )}
             >
-              <div className="flex items-center gap-2">
-                <span className="rounded border border-border px-1 py-px text-[10px] font-bold uppercase text-muted">
+              <div className="flex items-center gap-2.5">
+                <span
+                  className={cn(
+                    "rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase",
+                    typeColors[result.type]
+                  )}
+                >
                   {result.type}
                 </span>
-                <span className="text-[13px] font-medium text-foreground">
+                <span className="text-[13px] font-semibold text-foreground">
                   {result.title}
                 </span>
               </div>
-              <span className="mt-0.5 pl-[38px] text-xs text-muted">
+              <span className="mt-0.5 pl-[52px] text-xs text-muted">
                 {result.subtitle}
               </span>
             </Link>
@@ -157,9 +173,15 @@ export default function SearchBar() {
       )}
 
       {open && query && results.length === 0 && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-sm border border-border bg-surface p-4 text-center shadow-sm">
-          <p className="text-xs text-muted">
+        <div className="absolute top-full z-50 mt-2 w-full rounded-xl border border-border bg-surface p-6 text-center shadow-xl shadow-black/5">
+          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-surface-hover">
+            <Search className="h-5 w-5 text-muted" />
+          </div>
+          <p className="text-sm font-medium text-muted">
             No results for &ldquo;{query}&rdquo;
+          </p>
+          <p className="mt-0.5 text-xs text-muted/70">
+            Try searching for a subject or topic name
           </p>
         </div>
       )}

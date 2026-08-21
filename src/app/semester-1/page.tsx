@@ -52,75 +52,89 @@ export default function SemesterPage() {
   const completedCount = progress.completedTopics.length;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Semester 1
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          B.Tech CSE &middot; 2026&ndash;27 &middot; Group 1 / Group A
-        </p>
-
-        <div className="mt-5 max-w-sm">
-          <ProgressBar
-            value={completedCount}
-            max={totalTopics}
-            label="Overall Progress"
-            size="md"
-          />
+      <section className="hero-gradient-subtle relative overflow-hidden">
+        <div className="grid-bg absolute inset-0 opacity-50" />
+        <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-white/50">
+            B.Tech CSE &middot; 2026&ndash;27 &middot; Group 1 / Group A
+          </p>
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white">
+            Semester 1
+          </h1>
+          <div className="mt-4 max-w-sm">
+            <ProgressBar
+              value={completedCount}
+              max={totalTopics}
+              label="Overall Progress"
+              size="md"
+            />
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Filters & Sort */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-1">
-          {(["all", "common", "group1", "theory", "lab"] as FilterType[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={cn(
-                "rounded-sm px-2.5 py-1 text-xs font-medium transition-colors",
-                filter === f
-                  ? "bg-foreground text-background"
-                  : "text-muted hover:text-foreground"
-              )}
-            >
-              {f === "all" ? "All" : f === "common" ? "Common" : f === "group1" ? "Group 1" : f === "theory" ? "Theory" : "Lab"}
-            </button>
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-1">
+            {(
+              ["all", "common", "group1", "theory", "lab"] as FilterType[]
+            ).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={cn(
+                  "rounded-lg px-3 py-1.5 text-xs font-bold transition-all",
+                  filter === f
+                    ? "bg-foreground text-background shadow-sm"
+                    : "text-muted hover:text-foreground hover:bg-surface-hover"
+                )}
+              >
+                {f === "all"
+                  ? "All"
+                  : f === "common"
+                    ? "Common"
+                    : f === "group1"
+                      ? "Group 1"
+                      : f === "theory"
+                        ? "Theory"
+                        : "Lab"}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1">
+            {(["name", "credits", "code"] as SortType[]).map((s) => (
+              <button
+                key={s}
+                onClick={() => setSort(s)}
+                className={cn(
+                  "rounded-lg px-3 py-1.5 text-xs font-bold transition-all",
+                  sort === s
+                    ? "text-foreground bg-surface-hover"
+                    : "text-muted hover:text-foreground"
+                )}
+              >
+                {s === "name" ? "A-Z" : s === "credits" ? "Credits" : "Code"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div id="subjects">
+          {filtered.map((subject, i) => (
+            <SubjectCard key={subject.id} subject={subject} index={i} />
           ))}
         </div>
 
-        <div className="flex items-center gap-1">
-          {(["name", "credits", "code"] as SortType[]).map((s) => (
-            <button
-              key={s}
-              onClick={() => setSort(s)}
-              className={cn(
-                "rounded-sm px-2.5 py-1 text-xs font-medium transition-colors",
-                sort === s
-                  ? "text-foreground"
-                  : "text-muted hover:text-foreground"
-              )}
-            >
-              {s === "name" ? "A-Z" : s === "credits" ? "Credits" : "Code"}
-            </button>
-          ))}
-        </div>
+        {filtered.length === 0 && (
+          <div className="py-20 text-center">
+            <p className="text-sm text-muted">
+              No subjects found for this filter.
+            </p>
+          </div>
+        )}
       </div>
-
-      {/* Subject List */}
-      <div className="border-t border-border" id="subjects">
-        {filtered.map((subject, i) => (
-          <SubjectCard key={subject.id} subject={subject} index={i} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <p className="py-16 text-center text-sm text-muted">
-          No subjects found for this filter.
-        </p>
-      )}
     </div>
   );
 }
