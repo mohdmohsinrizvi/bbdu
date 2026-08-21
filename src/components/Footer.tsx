@@ -3,19 +3,51 @@
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-surface">
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-5 w-5 rounded bg-accent/10" />
-            <span className="text-xs font-semibold text-foreground">
-              BBDU Study Hub
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+          {/* Left: Brand */}
+          <div className="max-w-xs">
+            <span className="text-sm font-bold text-foreground">
+              BBDU CSE Study Hub
             </span>
+            <p className="mt-1 text-xs leading-relaxed text-muted">
+              A student-built learning platform for B.Tech CSE.
+            </p>
           </div>
-          <div className="flex items-center gap-4 text-xs text-muted">
-            <span>B.Tech CSE 2026&ndash;27</span>
-            <span className="h-3 w-px bg-border" />
-            <span>Student-built resource</span>
+
+          {/* Right: Credits */}
+          <div className="flex flex-col gap-4 text-right sm:text-right">
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
+                Created &amp; Designed by
+              </span>
+              <p className="mt-0.5">
+                <a
+                  href="https://mohsin-universe.netlify.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[15px] font-semibold text-foreground transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  Mohd Mohsin
+                </a>
+              </p>
+            </div>
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
+                Campus Outreach
+              </span>
+              <p className="mt-0.5 text-[14px] font-medium text-foreground">
+                Aquib — BBD University
+              </p>
+            </div>
           </div>
+        </div>
+
+        {/* Divider + Copyright */}
+        <div className="mt-6 border-t border-border pt-4">
+          <p className="text-center text-[11px] text-muted">
+            &copy; 2026 BBDU CSE Study Hub
+          </p>
         </div>
       </div>
     </footer>
