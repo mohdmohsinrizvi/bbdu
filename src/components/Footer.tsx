@@ -37,7 +37,18 @@ export default function Footer() {
                 Campus Outreach
               </span>
               <p className="mt-0.5 text-[14px] font-medium text-foreground">
-                Aquib — BBD University
+                <a
+                  href="https://www.instagram.com/aquibb22_"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  Aquib
+                </a>
+                {" — BBD University"}
+              </p>
+              <p className="mt-0.5 text-[11px] text-muted">
+                3rd Year · 5th Semester
               </p>
             </div>
           </div>
