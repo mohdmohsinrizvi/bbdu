@@ -1,0 +1,105 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+
+interface ProgressData {
+  completedTopics: string[];
+  completedVideos: string[];
+  startedSubjects: string[];
+}
+
+const STORAGE_KEY = "bbdu-study-hub-progress";
+
+function getProgress(): ProgressData {
+  if (typeof window === "undefined") {
+    return { completedTopics: [], completedVideos: [], startedSubjects: [] };
+  }
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) return JSON.parse(data);
+  } catch {}
+  return { completedTopics: [], completedVideos: [], startedSubjects: [] };
+}
+
+function saveProgress(data: ProgressData) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+export function useProgress() {
+  const [progress, setProgress] = useState<ProgressData>({
+    completedTopics: [],
+    completedVideos: [],
+    startedSubjects: [],
+  });
+
+  useEffect(() => {
+    setProgress(getProgress());
+  }, []);
+
+  const toggleTopic = useCallback((topicId: string) => {
+    setProgress((prev) => {
+      const completed = prev.completedTopics.includes(topicId)
+        ? prev.completedTopics.filter((id) => id !== topicId)
+        : [...prev.completedTopics, topicId];
+      const newProgress = { ...prev, completedTopics: completed };
+      saveProgress(newProgress);
+      return newProgress;
+    });
+  }, []);
+
+  const toggleVideo = useCallback((videoId: string) => {
+    setProgress((prev) => {
+      const completed = prev.completedVideos.includes(videoId)
+        ? prev.completedVideos.filter((id) => id !== videoId)
+        : [...prev.completedVideos, videoId];
+      const newProgress = { ...prev, completedVideos: completed };
+      saveProgress(newProgress);
+      return newProgress;
+    });
+  }, []);
+
+  const markSubjectStarted = useCallback((subjectId: string) => {
+    setProgress((prev) => {
+      if (prev.startedSubjects.includes(subjectId)) return prev;
+      const newProgress = { ...prev, startedSubjects: [...prev.startedSubjects, subjectId] };
+      saveProgress(newProgress);
+      return newProgress;
+    });
+  }, []);
+
+  const isTopicCompleted = useCallback(
+    (topicId: string) => progress.completedTopics.includes(topicId),
+    [progress.completedTopics]
+  );
+
+  const isVideoCompleted = useCallback(
+    (videoId: string) => progress.completedVideos.includes(videoId),
+    [progress.completedVideos]
+  );
+
+  const getSubjectProgress = useCallback(
+    (totalTopics: number, completedCount: number) => {
+      if (totalTopics === 0) return 0;
+      return Math.round((completedCount / totalTopics) * 100);
+    },
+    []
+  );
+
+  const resetProgress = useCallback(() => {
+    const empty: ProgressData = { completedTopics: [], completedVideos: [], startedSubjects: [] };
+    saveProgress(empty);
+    setProgress(empty);
+  }, []);
+
+  return {
+    progress,
+    toggleTopic,
+    toggleVideo,
+    markSubjectStarted,
+    isTopicCompleted,
+    isVideoCompleted,
+    getSubjectProgress,
+    resetProgress,
+  };
+}
