@@ -40,17 +40,6 @@ export function useProgress() {
     });
   }, []);
 
-  const toggleVideo = useCallback((videoId: string) => {
-    setProgress((prev) => {
-      const completed = prev.completedVideos.includes(videoId)
-        ? prev.completedVideos.filter((id) => id !== videoId)
-        : [...prev.completedVideos, videoId];
-      const newProgress = { ...prev, completedVideos: completed };
-      saveProgress(newProgress);
-      return newProgress;
-    });
-  }, []);
-
   const markSubjectStarted = useCallback((subjectId: string) => {
     setProgress((prev) => {
       if (prev.startedSubjects.includes(subjectId)) return prev;
@@ -63,11 +52,6 @@ export function useProgress() {
   const isTopicCompleted = useCallback(
     (topicId: string) => progress.completedTopics.includes(topicId),
     [progress.completedTopics]
-  );
-
-  const isVideoCompleted = useCallback(
-    (videoId: string) => progress.completedVideos.includes(videoId),
-    [progress.completedVideos]
   );
 
   const getSubjectProgress = useCallback(
@@ -87,10 +71,8 @@ export function useProgress() {
   return {
     progress,
     toggleTopic,
-    toggleVideo,
     markSubjectStarted,
     isTopicCompleted,
-    isVideoCompleted,
     getSubjectProgress,
     resetProgress,
   };

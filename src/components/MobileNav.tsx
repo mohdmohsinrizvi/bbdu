@@ -30,7 +30,7 @@ export default function MobileNav() {
                 active ? "text-accent" : "text-muted"
               )}
             >
-              <Icon className="h-4.5 w-4.5" />
+              <Icon className="h-5 w-5" />
               {item.label}
             </Link>
           );

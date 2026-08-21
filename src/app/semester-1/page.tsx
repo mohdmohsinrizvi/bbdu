@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { subjects } from "@/data/subjects";
-import SubjectRow from "@/components/SubjectCard";
+import SubjectCard from "@/components/SubjectCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
 import { cn } from "@/lib/utils";
@@ -80,7 +80,7 @@ export default function SemesterPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={cn(
-                "rounded px-2.5 py-1 text-xs font-medium transition-colors",
+                "rounded-sm px-2.5 py-1 text-xs font-medium transition-colors",
                 filter === f
                   ? "bg-foreground text-background"
                   : "text-muted hover:text-foreground"
@@ -97,7 +97,7 @@ export default function SemesterPage() {
               key={s}
               onClick={() => setSort(s)}
               className={cn(
-                "rounded px-2.5 py-1 text-xs font-medium transition-colors",
+                "rounded-sm px-2.5 py-1 text-xs font-medium transition-colors",
                 sort === s
                   ? "text-foreground"
                   : "text-muted hover:text-foreground"
@@ -112,7 +112,7 @@ export default function SemesterPage() {
       {/* Subject List */}
       <div className="border-t border-border" id="subjects">
         {filtered.map((subject, i) => (
-          <SubjectRow key={subject.id} subject={subject} index={i} />
+          <SubjectCard key={subject.id} subject={subject} index={i} />
         ))}
       </div>
 

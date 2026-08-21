@@ -35,7 +35,7 @@ export default function HomePage() {
         <div className="mt-6">
           <Link
             href="/semester-1"
-            className="inline-flex items-center gap-2 rounded bg-accent px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover"
+            className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover"
           >
             Explore Semester 1
             <ArrowRight className="h-3.5 w-3.5" />

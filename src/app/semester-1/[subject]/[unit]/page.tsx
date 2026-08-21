@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import TopicCard from "@/components/TopicCard";
+import TopicRow from "@/components/TopicCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
 
@@ -87,7 +87,7 @@ export default function UnitPage({
         </h2>
         <div className="border-t border-border">
           {unit.topics.map((topic, i) => (
-            <TopicCard
+            <TopicRow
               key={topic.id}
               topic={topic}
               subjectId={subjectId}

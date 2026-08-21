@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import type { Unit } from "@/data/types";
 import { cn } from "@/lib/utils";
-import TopicCard from "./TopicCard";
+import TopicRow from "./TopicCard";
 
 interface UnitCardProps {
   unit: Unit;
@@ -13,7 +13,7 @@ interface UnitCardProps {
   completedTopics: string[];
 }
 
-export default function UnitCard({ unit, subjectId, completedTopics }: UnitCardProps) {
+export default function UnitAccordion({ unit, subjectId, completedTopics }: UnitCardProps) {
   const [expanded, setExpanded] = useState(false);
   const completedCount = unit.topics.filter((t) =>
     completedTopics.includes(t.id)
@@ -64,7 +64,7 @@ export default function UnitCard({ unit, subjectId, completedTopics }: UnitCardP
       {expanded && (
         <div className="space-y-0 border-t border-border/50 pb-2">
           {unit.topics.map((topic, i) => (
-            <TopicCard
+            <TopicRow
               key={topic.id}
               topic={topic}
               subjectId={subjectId}

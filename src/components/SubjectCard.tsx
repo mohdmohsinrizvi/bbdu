@@ -8,7 +8,7 @@ interface SubjectRowProps {
   index: number;
 }
 
-export default function SubjectRow({ subject, index }: SubjectRowProps) {
+export default function SubjectCard({ subject, index }: SubjectRowProps) {
   const totalTopics = subject.units.reduce((acc, unit) => acc + unit.topics.length, 0);
 
   return (

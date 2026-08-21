@@ -7,7 +7,7 @@ interface ExperimentCardProps {
   index: number;
 }
 
-export default function ExperimentCard({ experiment }: ExperimentCardProps) {
+export default function ExperimentRow({ experiment }: ExperimentCardProps) {
   return (
     <div className="border-b border-border py-3">
       <div className="flex items-start gap-3">

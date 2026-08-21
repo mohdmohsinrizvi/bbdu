@@ -109,7 +109,7 @@ export default function SearchBar() {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search subjects, units, topics..."
-          className="w-full rounded border border-border bg-surface py-2 pl-9 pr-9 text-[13px] text-foreground outline-none transition-colors focus:border-accent/40"
+          className="w-full rounded-sm border border-border bg-surface py-2 pl-9 pr-9 text-[13px] text-foreground outline-none transition-colors focus:border-accent/40"
         />
         {query && (
           <button
@@ -126,7 +126,7 @@ export default function SearchBar() {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full z-50 mt-1 w-full overflow-hidden rounded border border-border bg-surface shadow-sm">
+        <div className="absolute top-full z-50 mt-1 w-full overflow-hidden rounded-sm border border-border bg-surface shadow-sm">
           {results.map((result, index) => (
             <Link
               key={result.href}
@@ -141,7 +141,7 @@ export default function SearchBar() {
               )}
             >
               <div className="flex items-center gap-2">
-                <span className="rounded border border-border px-1 py-px text-[9px] font-bold uppercase text-muted">
+                <span className="rounded border border-border px-1 py-px text-[10px] font-bold uppercase text-muted">
                   {result.type}
                 </span>
                 <span className="text-[13px] font-medium text-foreground">
@@ -157,7 +157,7 @@ export default function SearchBar() {
       )}
 
       {open && query && results.length === 0 && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded border border-border bg-surface p-4 text-center shadow-sm">
+        <div className="absolute top-full z-50 mt-1 w-full rounded-sm border border-border bg-surface p-4 text-center shadow-sm">
           <p className="text-xs text-muted">
             No results for &ldquo;{query}&rdquo;
           </p>

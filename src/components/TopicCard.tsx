@@ -13,7 +13,7 @@ interface TopicCardProps {
   index: number;
 }
 
-export default function TopicCard({ topic, subjectId, unitId, index }: TopicCardProps) {
+export default function TopicRow({ topic, subjectId, unitId, index }: TopicCardProps) {
   const { isTopicCompleted, toggleTopic } = useProgress();
   const completed = isTopicCompleted(topic.id);
 

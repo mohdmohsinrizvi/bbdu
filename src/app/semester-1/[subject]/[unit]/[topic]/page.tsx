@@ -90,7 +90,7 @@ export default function TopicPage({
       <div className="mb-8">
         <button
           onClick={() => toggleTopic(topicId)}
-          className={`inline-flex items-center gap-2 rounded border px-4 py-2 text-[13px] font-medium transition-colors ${
+          className={`inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-[13px] font-medium transition-colors ${
             completed
               ? "border-success/30 bg-success/10 text-success"
               : "border-border bg-surface text-muted hover:text-foreground"

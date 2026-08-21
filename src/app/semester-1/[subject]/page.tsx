@@ -6,8 +6,8 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { labExperiments } from "@/data/labExperiments";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import UnitCard from "@/components/UnitCard";
-import ExperimentCard from "@/components/ExperimentCard";
+import UnitAccordion from "@/components/UnitCard";
+import ExperimentRow from "@/components/ExperimentCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
 import { getCategoryLabel } from "@/lib/utils";
@@ -97,7 +97,7 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
           </h2>
           <div className="border-t border-border">
             {subject.units.map((unit) => (
-              <UnitCard
+              <UnitAccordion
                 key={unit.id}
                 unit={unit}
                 subjectId={subjectId}
@@ -116,7 +116,7 @@ export default function SubjectPage({ params }: { params: Promise<{ subject: str
           </h2>
           <div className="border-t border-border">
             {experiments.map((exp, i) => (
-              <ExperimentCard key={exp.id} experiment={exp} index={i} />
+              <ExperimentRow key={exp.id} experiment={exp} index={i} />
             ))}
           </div>
         </section>

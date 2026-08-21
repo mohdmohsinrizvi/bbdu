@@ -110,7 +110,7 @@ export default function AdminPage() {
             <select
               value={selectedSubject}
               onChange={(e) => { setSelectedSubject(e.target.value); setSelectedTopic(""); }}
-              className="w-full rounded border border-border bg-surface px-3 py-2 text-[13px] text-foreground outline-none focus:border-accent/40"
+              className="w-full rounded-sm border border-border bg-surface px-3 py-2 text-[13px] text-foreground outline-none focus:border-accent/40"
             >
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>{s.name} ({s.code})</option>
@@ -123,7 +123,7 @@ export default function AdminPage() {
             <select
               value={selectedTopic}
               onChange={(e) => setSelectedTopic(e.target.value)}
-              className="w-full rounded border border-border bg-surface px-3 py-2 text-[13px] text-foreground outline-none focus:border-accent/40"
+              className="w-full rounded-sm border border-border bg-surface px-3 py-2 text-[13px] text-foreground outline-none focus:border-accent/40"
             >
               <option value="">Select a topic</option>
               {allTopics.map((t) => (
@@ -135,7 +135,7 @@ export default function AdminPage() {
 
         {/* Existing videos */}
         {selectedTopic && (
-          <div className="rounded border border-border bg-surface p-4">
+          <div className="rounded-sm border border-border bg-surface p-4">
             <h3 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted">
               Existing Videos ({topicVideos.length})
             </h3>
@@ -181,7 +181,7 @@ export default function AdminPage() {
 
         {/* Add form */}
         {selectedTopic && (
-          <div className="rounded border border-border bg-surface p-4">
+          <div className="rounded-sm border border-border bg-surface p-4">
             <h3 className="mb-4 text-xs font-medium uppercase tracking-wider text-muted">
               <Plus className="mr-1 inline h-3 w-3" />
               Add Video
@@ -195,7 +195,7 @@ export default function AdminPage() {
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   placeholder="Video title"
-                  className="w-full rounded border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
+                  className="w-full rounded-sm border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
                 />
               </div>
 
@@ -206,7 +206,7 @@ export default function AdminPage() {
                   value={form.url}
                   onChange={(e) => setForm({ ...form, url: e.target.value })}
                   placeholder="https://youtube.com/watch?v=..."
-                  className="w-full rounded border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
+                  className="w-full rounded-sm border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
                 />
               </div>
 
@@ -217,7 +217,7 @@ export default function AdminPage() {
                   value={form.channel}
                   onChange={(e) => setForm({ ...form, channel: e.target.value })}
                   placeholder="Channel name"
-                  className="w-full rounded border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
+                  className="w-full rounded-sm border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
                 />
               </div>
 
@@ -227,7 +227,7 @@ export default function AdminPage() {
                   <select
                     value={form.language}
                     onChange={(e) => setForm({ ...form, language: e.target.value })}
-                    className="w-full rounded border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
+                    className="w-full rounded-sm border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
                   >
                     <option>English</option>
                     <option>Hindi</option>
@@ -240,7 +240,7 @@ export default function AdminPage() {
                   <select
                     value={form.level}
                     onChange={(e) => setForm({ ...form, level: e.target.value as Video["level"] })}
-                    className="w-full rounded border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
+                    className="w-full rounded-sm border border-border bg-background px-3 py-1.5 text-[13px] text-foreground outline-none focus:border-accent/40"
                   >
                     <option>Beginner</option>
                     <option>Intermediate</option>
@@ -264,7 +264,7 @@ export default function AdminPage() {
               <button
                 onClick={handleAdd}
                 disabled={!form.title || !form.url}
-                className="ml-auto inline-flex items-center gap-1.5 rounded bg-accent px-4 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-auto inline-flex items-center gap-1.5 rounded-sm bg-accent px-4 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="h-3.5 w-3.5" />
                 Add

@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { Play, ExternalLink } from "lucide-react";
 
 interface VideoPlayerProps {
   youtubeId: string;
   title: string;
   channel: string;
+}
+
+function youtubeLoader({ src, width }: { src: string; width: number }) {
+  const quality = width <= 320 ? "mqdefault" : width <= 640 ? "hqdefault" : "maxresdefault";
+  return `https://img.youtube.com/vi/${src}/${quality}.jpg`;
 }
 
 export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerProps) {
@@ -32,11 +38,9 @@ export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerPr
     return () => observer.disconnect();
   }, []);
 
-  const thumbnailUrl = `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
-
   return (
     <div ref={containerRef} className="w-full">
-      <div className="relative aspect-video w-full overflow-hidden rounded border border-border bg-foreground/5">
+      <div className="relative aspect-video w-full overflow-hidden border border-border bg-foreground/5">
         {loaded ? (
           <iframe
             src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
@@ -48,32 +52,31 @@ export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerPr
         ) : (
           <div className="relative h-full w-full">
             {inView ? (
-              <img
-                src={thumbnailUrl}
+              <Image
+                src={youtubeId}
                 alt={title}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-                }}
+                fill
+                sizes="(max-width: 768px) 100vw, 640px"
+                loader={youtubeLoader}
+                className="object-cover"
+                unoptimized
+                priority={false}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <div className="h-10 w-10 animate-pulse rounded-full bg-border" />
+                <div className="h-10 w-10 animate-pulse rounded bg-border" />
               </div>
             )}
 
-            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-black/20" />
 
             <button
               onClick={() => setLoaded(true)}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105"
+              className="absolute inset-0 flex items-center justify-center transition-opacity hover:opacity-90"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-600 shadow-lg">
-                <Play className="h-5 w-5 fill-white text-white" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-foreground/90 backdrop-blur-sm">
+                <Play className="ml-0.5 h-5 w-5 fill-background text-background" />
               </div>
-              <span className="text-xs font-medium text-white/90">
-                Click to play
-              </span>
             </button>
           </div>
         )}
@@ -88,7 +91,7 @@ export default function VideoPlayer({ youtubeId, title, channel }: VideoPlayerPr
           href={`https://www.youtube.com/watch?v=${youtubeId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs font-medium text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+          className="flex items-center gap-1 text-xs font-medium text-muted transition-colors hover:text-foreground"
         >
           <ExternalLink className="h-3 w-3" />
           YouTube
