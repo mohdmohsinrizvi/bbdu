@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { cn } from "@/lib/utils";
+import { trackSearch } from "@/lib/analytics";
 
 interface SearchResult {
   type: "subject" | "unit" | "topic";
@@ -63,6 +64,9 @@ export default function SearchBar() {
       }
     }
 
+    if (found.length > 0) {
+      trackSearch(q.trim());
+    }
     setResults(found.slice(0, 10));
     setActiveIndex(-1);
   }, []);

@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -9,6 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import TopicRow from "@/components/TopicCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
+import { trackUnitView } from "@/lib/analytics";
 
 export default function UnitPage({
   params,
@@ -21,6 +22,10 @@ export default function UnitPage({
   const { progress } = useProgress();
 
   if (!subject || !unit) notFound();
+
+  useEffect(() => {
+    trackUnitView(subject.name, unit.title, unit.number);
+  }, [subject.name, unit.title, unit.number]);
 
   const unitIndex = subject.units.findIndex((u) => u.id === unitId);
   const prevUnit = unitIndex > 0 ? subject.units[unitIndex - 1] : null;

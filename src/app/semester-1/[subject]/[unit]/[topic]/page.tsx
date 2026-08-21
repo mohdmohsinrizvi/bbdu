@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -16,6 +16,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import VideoPlayer from "@/components/VideoPlayer";
 import VideoCard from "@/components/VideoCard";
 import { useProgress } from "@/hooks/useProgress";
+import { trackTopicView, trackVideoOpen, trackTopicCompleted } from "@/lib/analytics";
 import type { Video } from "@/data/types";
 
 export default function TopicPage({
@@ -30,6 +31,10 @@ export default function TopicPage({
   const { toggleTopic, isTopicCompleted } = useProgress();
 
   if (!subject || !unit || !topic) notFound();
+
+  useEffect(() => {
+    trackTopicView(subject.name, unit.title, topic.title);
+  }, [subject.name, unit.title, topic.title]);
 
   const topicVideos = videos.filter(
     (v) => v.topicId === topicId && v.subjectId === subjectId
@@ -49,6 +54,21 @@ export default function TopicPage({
       : null;
 
   const completed = isTopicCompleted(topicId);
+
+  const handleVideoOpen = (video: Video) => {
+    setActiveVideo(video);
+    if (video.youtubeId) {
+      trackVideoOpen(subject.name, unit.title, topic.title, video.title, video.youtubeId);
+    }
+  };
+
+  const handleToggleComplete = () => {
+    const wasCompleted = isTopicCompleted(topicId);
+    toggleTopic(topicId);
+    if (!wasCompleted) {
+      trackTopicCompleted(subject.name, unit.title, topic.title);
+    }
+  };
 
   return (
     <div>
@@ -126,7 +146,7 @@ export default function TopicPage({
             {/* Mark as completed */}
             <div className="mb-8">
               <button
-                onClick={() => toggleTopic(topicId)}
+                onClick={handleToggleComplete}
                 className={`inline-flex items-center gap-2.5 rounded-xl border px-5 py-2.5 text-[13px] font-bold transition-all ${
                   completed
                     ? "border-success/30 bg-success/10 text-success hover:bg-success/15"
@@ -158,7 +178,7 @@ export default function TopicPage({
                     <VideoCard
                       key={v.id}
                       video={v}
-                      onSelect={setActiveVideo}
+                      onSelect={handleVideoOpen}
                       isActive={activeVideo?.id === v.id}
                     />
                   ))}

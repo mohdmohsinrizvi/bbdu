@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
@@ -12,6 +12,7 @@ import ExperimentRow from "@/components/ExperimentCard";
 import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
 import { getCategoryLabel } from "@/lib/utils";
+import { trackSubjectView } from "@/lib/analytics";
 
 const subjectColors: Record<string, string> = {
   calculus: "subject-calculus",
@@ -32,6 +33,10 @@ export default function SubjectPage({
   const { progress } = useProgress();
 
   if (!subject) notFound();
+
+  useEffect(() => {
+    trackSubjectView(subject.name, subject.code);
+  }, [subject.name, subject.code]);
 
   const experiments = labExperiments[subjectId] ?? [];
   const totalTopics = subject.units.reduce(

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
+import { trackContinueLearning } from "@/lib/analytics";
 
 const theorySubjects = subjects.filter((s) => s.type === "theory");
 
@@ -255,6 +256,7 @@ export default function HomePage() {
 
             <Link
               href={`/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
+              onClick={() => trackContinueLearning(continueSubject.name, continueUnit?.title || "", continueTopic.title)}
               className="group card-hover block rounded-xl border border-border bg-surface p-5 sm:p-6"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
