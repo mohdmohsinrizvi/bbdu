@@ -3,15 +3,33 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sun, Moon, Menu, X, BookOpen } from "lucide-react";
+import { Sun, Moon, Menu, X, BookOpen, Search } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
+  { label: "Select Branch", href: "/select" },
   { label: "Semester 1", href: "/semester-1" },
   { label: "Search", href: "/search" },
   { label: "Progress", href: "/progress" },
 ];
+
+function SearchTrigger() {
+  return (
+    <button
+      onClick={() => {
+        window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }));
+      }}
+      className="hidden items-center gap-2 rounded-lg border border-border bg-surface-hover px-3 py-1.5 text-xs text-muted transition-colors hover:border-accent/30 hover:text-foreground md:flex"
+    >
+      <Search className="h-3.5 w-3.5" />
+      <span>Search</span>
+      <kbd className="rounded border border-border bg-surface px-1 py-0.5 text-[10px] font-bold">
+        Ctrl+K
+      </kbd>
+    </button>
+  );
+}
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -61,6 +79,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-1">
+          <SearchTrigger />
           <button
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
             className="rounded-lg p-2 text-muted transition-colors hover:bg-surface-hover hover:text-foreground"

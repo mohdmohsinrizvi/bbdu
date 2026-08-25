@@ -5,15 +5,7 @@ import { ArrowRight, RotateCcw } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import ProgressBar from "@/components/ProgressBar";
-
-const subjectColors: Record<string, string> = {
-  calculus: "subject-calculus",
-  "computer-concepts-programming-c": "subject-programming",
-  "quantum-physics": "subject-quantum",
-  "engineering-mechanics": "subject-mechanics",
-  "basic-electronics": "subject-electronics",
-  "environment-ecological-sustainability": "subject-environment",
-};
+import { getSubjectColor } from "@/lib/constants";
 
 export default function ProgressPage() {
   const { progress, resetProgress } = useProgress();
@@ -104,8 +96,7 @@ export default function ProgressPage() {
           </h2>
           <div className="space-y-3">
             {subjectProgress.map(({ subject, done, total, percent }) => {
-              const colorClass =
-                subjectColors[subject.id] || "subject-calculus";
+              const colorClass = getSubjectColor(subject.id);
               return (
                 <Link
                   key={subject.id}

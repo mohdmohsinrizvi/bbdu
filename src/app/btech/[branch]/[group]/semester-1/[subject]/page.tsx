@@ -4,6 +4,7 @@ import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+import { getBranch } from "@/data/branches";
 import { subjects } from "@/data/subjects";
 import { labExperiments } from "@/data/labExperiments";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -15,16 +16,18 @@ import { getCategoryLabel } from "@/lib/utils";
 import { trackSubjectView } from "@/lib/analytics";
 import { getSubjectColor } from "@/lib/constants";
 
-export default function SubjectPage({
+export default function BranchSubjectPage({
   params,
 }: {
-  params: Promise<{ subject: string }>;
+  params: Promise<{ branch: string; group: string; subject: string }>;
 }) {
-  const { subject: subjectId } = use(params);
+  const { branch: branchId, group: groupId, subject: subjectId } = use(params);
+  const branch = getBranch(branchId);
+  const group = branch?.groups.find((g) => g.id === groupId);
   const subject = subjects.find((s) => s.id === subjectId);
   const { progress } = useProgress();
 
-  if (!subject) notFound();
+  if (!branch || !group || !subject) notFound();
 
   useEffect(() => {
     trackSubjectView(subject.name, subject.code);
@@ -39,71 +42,65 @@ export default function SubjectPage({
     .flatMap((u) => u.topics)
     .filter((t) => progress.completedTopics.includes(t.id)).length;
   const colorClass = getSubjectColor(subjectId);
-  const subjectIndex = subjects.findIndex((s) => s.id === subjectId);
 
   return (
     <div>
-      {/* Header */}
       <section className="hero-gradient-subtle relative overflow-hidden">
         <div className="grid-bg absolute inset-0 opacity-50" />
         <div className="noise-overlay absolute inset-0" />
         <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
           <Breadcrumbs
             items={[
-              { label: "Home", href: "/" },
-              { label: "Semester 1", href: "/semester-1" },
+              { label: "Home", href: "/select" },
+              { label: branch.shortName, href: `/select` },
+              { label: group.name, href: `/btech/${branchId}/${groupId}/semester-1` },
               { label: subject.name },
             ]}
           />
 
-          <div className="mt-6 flex items-start gap-6">
-            <span className="editorial-number text-6xl sm:text-8xl">
-              {String(subjectIndex + 1).padStart(2, "0")}
-            </span>
-            <div className="min-w-0 flex-1 pt-2">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/70">
-                  {getCategoryLabel(subject.category)}
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/70">
+                {getCategoryLabel(subject.category)}
+              </span>
+              <span className="text-xs font-medium text-white/50">
+                {subject.code}
+              </span>
+              {subject.type === "lab" && (
+                <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase text-white/70">
+                  Lab
                 </span>
-                <span className="text-xs font-medium text-white/50">
-                  {subject.code}
-                </span>
-                {subject.type === "lab" && (
-                  <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase text-white/70">
-                    Lab
-                  </span>
-                )}
-              </div>
-
-              <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                {subject.name}
-              </h1>
-
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-white/60">
-                <span className="font-semibold">
-                  {subject.credits} Credits
-                </span>
-                <span>
-                  {subject.lectureHours}L {subject.tutorialHours}T{" "}
-                  {subject.practicalHours}P
-                </span>
-                {totalTopics > 0 && (
-                  <span className="tabular-nums">
-                    {completedTopics}/{totalTopics} topics completed
-                  </span>
-                )}
-              </div>
-
-              {totalTopics > 0 && (
-                <div className="mt-4 max-w-sm">
-                  <ProgressBar
-                    value={completedTopics}
-                    max={totalTopics}
-                    size="sm"
-                  />
-                </div>
               )}
             </div>
+
+            <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+              {subject.name}
+            </h1>
+
+            <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-white/60">
+              <span className="font-semibold">
+                {subject.credits} Credits
+              </span>
+              <span>
+                {subject.lectureHours}L {subject.tutorialHours}T{" "}
+                {subject.practicalHours}P
+              </span>
+              {totalTopics > 0 && (
+                <span className="tabular-nums">
+                  {completedTopics}/{totalTopics} topics completed
+                </span>
+              )}
+            </div>
+
+            {totalTopics > 0 && (
+              <div className="mt-4 max-w-sm">
+                <ProgressBar
+                  value={completedTopics}
+                  max={totalTopics}
+                  size="sm"
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>

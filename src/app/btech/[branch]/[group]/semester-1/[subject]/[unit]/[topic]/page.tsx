@@ -20,12 +20,12 @@ import { useProgress } from "@/hooks/useProgress";
 import { trackTopicView, trackVideoOpen, trackTopicCompleted } from "@/lib/analytics";
 import type { Video } from "@/data/types";
 
-export default function TopicPage({
+export default function BranchTopicPage({
   params,
 }: {
-  params: Promise<{ subject: string; unit: string; topic: string }>;
+  params: Promise<{ branch: string; group: string; subject: string; unit: string; topic: string }>;
 }) {
-  const { subject: subjectId, unit: unitId, topic: topicId } = use(params);
+  const { branch: branchId, group: groupId, subject: subjectId, unit: unitId, topic: topicId } = use(params);
   const subject = subjects.find((s) => s.id === subjectId);
   const unit = subject?.units.find((u) => u.id === unitId);
   const topic = unit?.topics.find((t) => t.id === topicId);
@@ -76,22 +76,16 @@ export default function TopicPage({
 
   return (
     <div>
-      {/* Header */}
+      <Confetti trigger={showConfetti} />
+
       <section className="hero-gradient-subtle relative overflow-hidden">
         <div className="grid-bg absolute inset-0 opacity-50" />
         <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <Breadcrumbs
             items={[
-              { label: "Home", href: "/" },
-              { label: "Semester 1", href: "/semester-1" },
-              {
-                label: subject.name,
-                href: `/semester-1/${subjectId}`,
-              },
-              {
-                label: unit.title,
-                href: `/semester-1/${subjectId}/${unitId}`,
-              },
+              { label: "Home", href: "/select" },
+              { label: subject.name, href: `/btech/${branchId}/${groupId}/semester-1/${subjectId}` },
+              { label: unit.title, href: `/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}` },
               { label: topic.title },
             ]}
           />
@@ -122,10 +116,7 @@ export default function TopicPage({
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
-          {/* Main Content */}
-    <div>
-      <Confetti trigger={showConfetti} />
-            {/* Video Player */}
+          <div>
             {activeVideo && activeVideo.youtubeId ? (
               <div className="mb-8">
                 <VideoPlayer
@@ -148,7 +139,6 @@ export default function TopicPage({
               </div>
             )}
 
-            {/* Mark as completed */}
             <div className="mb-8">
               <button
                 onClick={handleToggleComplete}
@@ -172,7 +162,6 @@ export default function TopicPage({
               </button>
             </div>
 
-            {/* Related Videos */}
             {topicVideos.length > 1 && (
               <section className="mb-10">
                 <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
@@ -191,11 +180,10 @@ export default function TopicPage({
               </section>
             )}
 
-            {/* Prev / Next Topic */}
             <div className="flex items-center justify-between border-t border-border pt-6">
               {prevTopic ? (
                 <Link
-                  href={`/semester-1/${subjectId}/${unitId}/${prevTopic.id}`}
+                  href={`/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${prevTopic.id}`}
                   className="group flex items-center gap-3"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border transition-colors group-hover:border-accent/30 group-hover:bg-accent/5">
@@ -216,7 +204,7 @@ export default function TopicPage({
 
               {nextTopic ? (
                 <Link
-                  href={`/semester-1/${subjectId}/${unitId}/${nextTopic.id}`}
+                  href={`/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${nextTopic.id}`}
                   className="group flex items-center gap-3"
                 >
                   <div className="text-right">
@@ -237,22 +225,16 @@ export default function TopicPage({
             </div>
           </div>
 
-          {/* Sidebar */}
           <aside className="hidden lg:block">
             <div className="sticky top-20">
               <div className="rounded-xl border border-border bg-surface p-4">
                 <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
                   This Topic
                 </h3>
-
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted">Status</span>
-                    <span
-                      className={`font-bold ${
-                        completed ? "text-success" : "text-muted"
-                      }`}
-                    >
+                    <span className={`font-bold ${completed ? "text-success" : "text-muted"}`}>
                       {completed ? "Completed" : "In Progress"}
                     </span>
                   </div>
@@ -278,7 +260,7 @@ export default function TopicPage({
                     {unit.topics.map((t, i) => (
                       <Link
                         key={t.id}
-                        href={`/semester-1/${subjectId}/${unitId}/${t.id}`}
+                        href={`/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${t.id}`}
                         className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs transition-colors ${
                           t.id === topicId
                             ? "bg-accent/8 text-accent font-semibold"

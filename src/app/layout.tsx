@@ -6,6 +6,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MobileNav from "@/components/MobileNav";
 import Analytics from "@/components/Analytics";
+import PageTransition from "@/components/PageTransition";
+import ScrollToTop from "@/components/ScrollToTop";
+import SearchModal from "@/components/SearchModal";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -16,9 +19,45 @@ const jakarta = Plus_Jakarta_Sans({
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
-  title: "BBDU CSE Study Hub",
+  title: {
+    default: "BBDU CSE Study Hub",
+    template: "%s | BBDU CSE Study Hub",
+  },
   description:
-    "B.Tech CSE Semester 1 — structured subjects, curated videos, and progress tracking.",
+    "B.Tech CSE Semester 1 — structured subjects, curated YouTube videos, and progress tracking. Built by students, for students at BBD University.",
+  keywords: [
+    "BBDU",
+    "BBD University",
+    "B.Tech CSE",
+    "Semester 1",
+    "study hub",
+    "computer science",
+    "engineering",
+    "calculus",
+    "quantum physics",
+    "C programming",
+    "electronics",
+  ],
+  authors: [{ name: "Mohd Mohsin" }],
+  openGraph: {
+    title: "BBDU CSE Study Hub",
+    description:
+      "B.Tech CSE Semester 1 — structured subjects, curated YouTube videos, and progress tracking.",
+    url: "https://bbdu-study-hub.vercel.app",
+    siteName: "BBDU CSE Study Hub",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BBDU CSE Study Hub",
+    description:
+      "B.Tech CSE Semester 1 — structured subjects, curated YouTube videos, and progress tracking.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -51,9 +90,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${jakarta.variable} min-h-screen bg-background text-foreground font-sans antialiased`}>
         <div className="flex min-h-screen flex-col">
           <Navbar />
-          <main className="flex-1 pb-20 md:pb-0">{children}</main>
+          <main className="flex-1 pb-20 md:pb-0">
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Footer />
           <MobileNav />
+          <ScrollToTop />
+          <SearchModal />
         </div>
         <Analytics />
       </body>

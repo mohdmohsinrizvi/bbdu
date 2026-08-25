@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -13,20 +14,20 @@ import {
 import { subjects } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import { trackContinueLearning } from "@/lib/analytics";
+import { getSubjectColor } from "@/lib/constants";
 
 const theorySubjects = subjects.filter((s) => s.type === "theory");
 
-const subjectColors: Record<string, string> = {
-  calculus: "subject-calculus",
-  "computer-concepts-programming-c": "subject-programming",
-  "quantum-physics": "subject-quantum",
-  "engineering-mechanics": "subject-mechanics",
-  "basic-electronics": "subject-electronics",
-  "environment-ecological-sustainability": "subject-environment",
-};
-
 export default function HomePage() {
   const { progress } = useProgress();
+
+  useEffect(() => {
+    const branch = localStorage.getItem("bbdu-branch");
+    const group = localStorage.getItem("bbdu-group");
+    if (branch && group) {
+      window.location.href = `/btech/${branch}/${group}/semester-1`;
+    }
+  }, []);
 
   const allTopics = subjects.flatMap((s) => s.units.flatMap((u) => u.topics));
   const totalTopics = allTopics.length;
@@ -104,10 +105,10 @@ export default function HomePage() {
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/semester-1"
+                  href="/select"
                   className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-[13px] font-semibold text-indigo-900 transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
                 >
-                  Explore Semester
+                  Get Started
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
                 <Link
@@ -329,8 +330,7 @@ export default function HomePage() {
                 totalTopicsCount > 0
                   ? Math.round((subjectCompleted / totalTopicsCount) * 100)
                   : 0;
-              const colorClass =
-                subjectColors[subject.id] || "subject-calculus";
+              const colorClass = getSubjectColor(subject.id);
 
               return (
                 <Link

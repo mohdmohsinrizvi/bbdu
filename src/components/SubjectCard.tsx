@@ -4,20 +4,12 @@ import Link from "next/link";
 import type { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { cn } from "@/lib/utils";
+import { getSubjectColor } from "@/lib/constants";
 
 interface SubjectRowProps {
   subject: Subject;
   index: number;
 }
-
-const subjectColors: Record<string, string> = {
-  calculus: "subject-calculus",
-  "computer-concepts-programming-c": "subject-programming",
-  "quantum-physics": "subject-quantum",
-  "engineering-mechanics": "subject-mechanics",
-  "basic-electronics": "subject-electronics",
-  "environment-ecological-sustainability": "subject-environment",
-};
 
 export default function SubjectCard({ subject, index }: SubjectRowProps) {
   const { progress } = useProgress();
@@ -29,7 +21,7 @@ export default function SubjectCard({ subject, index }: SubjectRowProps) {
     .flatMap((u) => u.topics)
     .filter((t) => progress.completedTopics.includes(t.id)).length;
   const pct = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
-  const colorClass = subjectColors[subject.id] || "subject-calculus";
+  const colorClass = getSubjectColor(subject.id);
 
   return (
     <Link
