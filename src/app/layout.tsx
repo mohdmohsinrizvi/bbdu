@@ -9,6 +9,8 @@ import Analytics from "@/components/Analytics";
 import PageTransition from "@/components/PageTransition";
 import ScrollToTop from "@/components/ScrollToTop";
 import SearchModal from "@/components/SearchModal";
+import ComingSoon from "@/components/ComingSoon";
+import FeedbackButton from "@/components/FeedbackButton";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -93,9 +95,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1 pb-20 md:pb-0">
             <PageTransition>{children}</PageTransition>
           </main>
+          <ComingSoon />
           <Footer />
           <MobileNav />
           <ScrollToTop />
+          <FeedbackButton />
           <SearchModal />
         </div>
         <Analytics />
