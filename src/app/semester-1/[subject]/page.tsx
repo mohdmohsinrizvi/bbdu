@@ -2,8 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { labExperiments } from "@/data/labExperiments";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -13,7 +12,6 @@ import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
 import { getCategoryLabel } from "@/lib/utils";
 import { trackSubjectView } from "@/lib/analytics";
-import { getSubjectColor } from "@/lib/constants";
 
 export default function SubjectPage({
   params,
@@ -38,7 +36,6 @@ export default function SubjectPage({
   const completedTopics = subject.units
     .flatMap((u) => u.topics)
     .filter((t) => progress.completedTopics.includes(t.id)).length;
-  const colorClass = getSubjectColor(subjectId);
   const subjectIndex = subjects.findIndex((s) => s.id === subjectId);
 
   return (

@@ -10,9 +10,10 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
+  light?: boolean;
 }
 
-export default function Breadcrumbs({ items }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, light = true }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb" className="flex items-center overflow-x-auto">
       <ol className="flex items-center gap-1.5 text-xs">
@@ -22,19 +23,19 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           return (
             <li key={index} className="flex items-center gap-1.5">
               {index > 0 && (
-                <ChevronRight className="h-3 w-3 flex-shrink-0 text-white/30" />
+                <ChevronRight className={`h-3 w-3 flex-shrink-0 ${light ? "text-white/30" : "text-border-strong"}`} />
               )}
               {index === 0 && (
-                <Home className="h-3 w-3 flex-shrink-0 text-white/50" />
+                <Home className={`h-3 w-3 flex-shrink-0 ${light ? "text-white/50" : "text-muted"}`} />
               )}
               {isLast || !item.href ? (
-                <span className="truncate font-semibold text-white/90">
+                <span className={`truncate font-semibold ${light ? "text-white/90" : "text-foreground"}`}>
                   {item.label}
                 </span>
               ) : (
                 <Link
                   href={item.href}
-                  className="truncate text-white/50 transition-colors hover:text-white/80"
+                  className={`truncate transition-colors ${light ? "text-white/50 hover:text-white/80" : "text-muted hover:text-foreground"}`}
                 >
                   {item.label}
                 </Link>

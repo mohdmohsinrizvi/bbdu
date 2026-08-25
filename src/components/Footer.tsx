@@ -1,11 +1,8 @@
-"use client";
-
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-          {/* Left: Brand */}
           <div className="max-w-xs">
             <span className="text-sm font-bold text-foreground">
               BBDU CSE Study Hub
@@ -15,7 +12,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Right: Credits */}
           <div className="flex flex-col gap-4 text-right sm:text-right">
             <div>
               <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
@@ -54,7 +50,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Divider + Copyright */}
         <div className="mt-6 border-t border-border pt-4">
           <p className="text-center text-[11px] text-muted">
             &copy; 2026 BBDU CSE Study Hub

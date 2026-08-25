@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, FileText, Layers, BookOpen } from "lucide-react";
+import { Search, FileText, Layers, BookOpen } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { cn } from "@/lib/utils";
 
@@ -75,6 +74,8 @@ export default function SearchModal() {
       }
       if (e.key === "Escape") {
         setOpen(false);
+        setQuery("");
+        setResults([]);
       }
     };
     window.addEventListener("keydown", handler);
@@ -84,9 +85,6 @@ export default function SearchModal() {
   useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 50);
-    } else {
-      setQuery("");
-      setResults([]);
     }
   }, [open]);
 
@@ -110,101 +108,92 @@ export default function SearchModal() {
     topic: BookOpen,
   };
 
+  if (!open) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            transition={{ duration: 0.15 }}
-            className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2 px-4"
-          >
-            <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl shadow-black/20">
-              <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-                <Search className="h-4 w-4 text-muted" />
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    search(e.target.value);
-                  }}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Search subjects, units, topics..."
-                  className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
-                />
-                <kbd className="hidden rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-bold text-muted sm:inline">
-                  ESC
-                </kbd>
-              </div>
+    <>
+      <div
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fade-in"
+        onClick={() => { setOpen(false); setQuery(""); setResults([]); }}
+      />
+      <div className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2 px-4 animate-scale-in">
+        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl shadow-black/20">
+          <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+            <Search className="h-4 w-4 text-muted" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                search(e.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="Search subjects, units, topics..."
+              className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
+            />
+            <kbd className="hidden rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-bold text-muted sm:inline">
+              ESC
+            </kbd>
+          </div>
 
-              {results.length > 0 && (
-                <div className="max-h-80 overflow-y-auto p-2">
-                  {results.map((result, index) => {
-                    const Icon = icons[result.type];
-                    return (
-                      <button
-                        key={result.href}
-                        onClick={() => {
-                          router.push(result.href);
-                          setOpen(false);
-                        }}
-                        className={cn(
-                          "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
-                          index === activeIndex
-                            ? "bg-accent/8 text-accent"
-                            : "text-foreground hover:bg-surface-hover"
-                        )}
-                      >
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-surface-hover">
-                          <Icon className="h-4 w-4 text-muted" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-semibold">
-                            {result.title}
-                          </p>
-                          <p className="truncate text-xs text-muted">
-                            {result.subtitle}
-                          </p>
-                        </div>
-                        <span className="rounded-md bg-surface-hover px-1.5 py-0.5 text-[10px] font-bold uppercase text-muted">
-                          {result.type}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {query && results.length === 0 && (
-                <div className="px-4 py-8 text-center">
-                  <p className="text-sm text-muted">
-                    No results for &ldquo;{query}&rdquo;
-                  </p>
-                </div>
-              )}
-
-              {!query && (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-xs text-muted">
-                    Type to search across all subjects, units, and topics
-                  </p>
-                </div>
-              )}
+          {results.length > 0 && (
+            <div className="max-h-80 overflow-y-auto p-2">
+              {results.map((result, index) => {
+                const Icon = icons[result.type];
+                return (
+                  <button
+                    key={result.href}
+                    onClick={() => {
+                      router.push(result.href);
+                      setOpen(false);
+                      setQuery("");
+                      setResults([]);
+                    }}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
+                      index === activeIndex
+                        ? "bg-accent/8 text-accent"
+                        : "text-foreground hover:bg-surface-hover"
+                    )}
+                  >
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-surface-hover">
+                      <Icon className="h-4 w-4 text-muted" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">
+                        {result.title}
+                      </p>
+                      <p className="truncate text-xs text-muted">
+                        {result.subtitle}
+                      </p>
+                    </div>
+                    <span className="rounded-md bg-surface-hover px-1.5 py-0.5 text-[10px] font-bold uppercase text-muted">
+                      {result.type}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          )}
+
+          {query && results.length === 0 && (
+            <div className="px-4 py-8 text-center">
+              <p className="text-sm text-muted">
+                No results for &ldquo;{query}&rdquo;
+              </p>
+            </div>
+          )}
+
+          {!query && (
+            <div className="px-4 py-6 text-center">
+              <p className="text-xs text-muted">
+                Type to search across all subjects, units, and topics
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }

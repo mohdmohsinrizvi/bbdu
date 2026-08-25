@@ -55,7 +55,7 @@ export default function VideoPlayer({
 
   return (
     <div ref={containerRef} className="w-full">
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-foreground/5 shadow-lg shadow-black/5">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-border bg-foreground/5">
         {loaded ? (
           <iframe
             src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
@@ -90,7 +90,7 @@ export default function VideoPlayer({
               className="absolute inset-0 flex items-center justify-center group"
             >
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-2xl transition-all group-hover:scale-110 group-hover:bg-white">
-                <Play className="ml-1 h-6 w-6 fill-indigo-600 text-indigo-600" />
+                <Play className="ml-1 h-6 w-6 fill-accent text-accent" />
               </div>
             </button>
 

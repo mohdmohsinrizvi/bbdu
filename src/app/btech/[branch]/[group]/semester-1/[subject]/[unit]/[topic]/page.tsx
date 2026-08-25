@@ -70,7 +70,7 @@ export default function BranchTopicPage({
     if (!wasCompleted) {
       trackTopicCompleted(subject.name, unit.title, topic.title);
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 100);
+      setTimeout(() => setShowConfetti(false), 1500);
     }
   };
 

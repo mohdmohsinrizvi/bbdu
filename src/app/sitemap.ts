@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { subjects } from "@/data/subjects";
 import { branches } from "@/data/branches";
 import { getSubjectsForGroup } from "@/lib/branchUtils";
 

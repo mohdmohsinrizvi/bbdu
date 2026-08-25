@@ -2,8 +2,7 @@
 
 import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { getBranch } from "@/data/branches";
 import { subjects } from "@/data/subjects";
 import { labExperiments } from "@/data/labExperiments";
@@ -14,7 +13,6 @@ import ProgressBar from "@/components/ProgressBar";
 import { useProgress } from "@/hooks/useProgress";
 import { getCategoryLabel } from "@/lib/utils";
 import { trackSubjectView } from "@/lib/analytics";
-import { getSubjectColor } from "@/lib/constants";
 
 export default function BranchSubjectPage({
   params,
@@ -41,7 +39,6 @@ export default function BranchSubjectPage({
   const completedTopics = subject.units
     .flatMap((u) => u.topics)
     .filter((t) => progress.completedTopics.includes(t.id)).length;
-  const colorClass = getSubjectColor(subjectId);
 
   return (
     <div>
@@ -52,7 +49,7 @@ export default function BranchSubjectPage({
           <Breadcrumbs
             items={[
               { label: "Home", href: "/select" },
-              { label: branch.shortName, href: `/select` },
+              { label: branch.shortName, href: "/select" },
               { label: group.name, href: `/btech/${branchId}/${groupId}/semester-1` },
               { label: subject.name },
             ]}
@@ -145,6 +142,8 @@ export default function BranchSubjectPage({
                   unit={unit}
                   subjectId={subjectId}
                   completedTopics={progress.completedTopics}
+                  branchId={branchId}
+                  groupId={groupId}
                 />
               ))}
             </div>

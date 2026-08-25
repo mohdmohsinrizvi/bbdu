@@ -11,12 +11,16 @@ interface UnitCardProps {
   unit: Unit;
   subjectId: string;
   completedTopics: string[];
+  branchId?: string;
+  groupId?: string;
 }
 
 export default function UnitAccordion({
   unit,
   subjectId,
   completedTopics,
+  branchId,
+  groupId,
 }: UnitCardProps) {
   const [expanded, setExpanded] = useState(false);
   const completedCount = unit.topics.filter((t) =>
@@ -25,6 +29,10 @@ export default function UnitAccordion({
   const progress = unit.topics.length
     ? Math.round((completedCount / unit.topics.length) * 100)
     : 0;
+
+  const unitHref = branchId && groupId
+    ? `/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unit.id}`
+    : `/semester-1/${subjectId}/${unit.id}`;
 
   return (
     <div className="border-b border-border">
@@ -80,11 +88,13 @@ export default function UnitAccordion({
               subjectId={subjectId}
               unitId={unit.id}
               index={i}
+              branchId={branchId}
+              groupId={groupId}
             />
           ))}
 
           <Link
-            href={`/semester-1/${subjectId}/${unit.id}`}
+            href={unitHref}
             className="ml-12 mt-2 flex items-center gap-1.5 py-2 text-xs font-bold text-accent hover:text-accent-hover transition-colors"
           >
             View full unit

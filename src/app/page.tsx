@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -10,6 +11,10 @@ import {
   ChevronRight,
   Layers,
   FileText,
+  Sparkles,
+  Brain,
+  MessageCircle,
+  Trophy,
 } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
@@ -18,30 +23,46 @@ import { getSubjectColor } from "@/lib/constants";
 
 const theorySubjects = subjects.filter((s) => s.type === "theory");
 
+const comingSoonFeatures = [
+  {
+    icon: Brain,
+    title: "AI Study Assistant",
+    description: "Instant doubt clearing and personalized study plans.",
+  },
+  {
+    icon: BookOpen,
+    title: "Notes & Bookmarks",
+    description: "Save topics, add notes, bookmark resources.",
+  },
+  {
+    icon: Trophy,
+    title: "Quizzes & Practice",
+    description: "Test knowledge with topic-wise quizzes.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Discussion Forums",
+    description: "Connect with peers and share materials.",
+  },
+];
+
 export default function HomePage() {
   const { progress } = useProgress();
+  const router = useRouter();
 
   useEffect(() => {
     const branch = localStorage.getItem("bbdu-branch");
     const group = localStorage.getItem("bbdu-group");
     if (branch && group) {
-      window.location.href = `/btech/${branch}/${group}/semester-1`;
+      router.push(`/btech/${branch}/${group}/semester-1`);
     }
-  }, []);
+  }, [router]);
 
   const allTopics = subjects.flatMap((s) => s.units.flatMap((u) => u.topics));
   const totalTopics = allTopics.length;
   const completedTopics = progress.completedTopics.length;
   const totalUnits = subjects.reduce(
     (acc, s) => acc + s.units.reduce((a, u) => a + u.topics.length, 0),
-    0
-  );
-  const completedUnits = subjects.reduce(
-    (acc, s) =>
-      acc +
-      s.units.filter((u) =>
-        u.topics.every((t) => progress.completedTopics.includes(t.id))
-      ).length,
     0
   );
 
@@ -93,7 +114,7 @@ export default function HomePage() {
                 <br />
                 Your Syllabus.
                 <br />
-                <span className="text-gradient bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent [-webkit-text-fill-color:transparent]">
+                <span className="text-white/80">
                   Your Way to Learn.
                 </span>
               </h1>
@@ -122,10 +143,10 @@ export default function HomePage() {
 
             {/* Floating curriculum card */}
             <div className="flex-shrink-0 lg:w-[340px]">
-              <div className="animate-float rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
                 <div className="mb-4 flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
-                    <GraduationCap className="h-4 w-4 text-indigo-300" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+                    <GraduationCap className="h-4 w-4 text-white/80" />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-white">Semester 01</p>
@@ -161,7 +182,7 @@ export default function HomePage() {
                           </p>
                           <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/10">
                             <div
-                              className="h-full rounded-full bg-indigo-400 transition-all duration-700"
+                              className="h-full rounded-full bg-white/40 transition-all duration-700"
                               style={{ width: `${pct}%` }}
                             />
                           </div>
@@ -187,42 +208,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Access Strip */}
+      {/* Quick Stats */}
       <section className="border-b border-border bg-surface">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="grid grid-cols-2 sm:grid-cols-4">
             {[
-              {
-                label: "Subjects",
-                value: subjects.length,
-                icon: Layers,
-                href: "/semester-1",
-              },
-              {
-                label: "Topics",
-                value: totalTopics,
-                icon: FileText,
-                href: "/semester-1",
-              },
-              {
-                label: "Videos",
-                value: "50+",
-                icon: Play,
-                href: "/semester-1",
-              },
-              {
-                label: "Completed",
-                value: completedTopics,
-                icon: BookOpen,
-                href: "/progress",
-              },
-            ].map((stat, i) => (
-              <Link
+              { label: "Subjects", value: subjects.length, icon: Layers },
+              { label: "Topics", value: totalTopics, icon: FileText },
+              { label: "Videos", value: "50+", icon: Play },
+              { label: "Completed", value: completedTopics, icon: BookOpen },
+            ].map((stat) => (
+              <div
                 key={stat.label}
-                href={stat.href}
-                className="group flex items-center gap-3 border-r border-border px-4 py-4 last:border-r-0 transition-colors hover:bg-surface-hover"
+                className="flex items-center gap-3 border-r border-border px-4 py-4 last:border-r-0"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/8 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/8 text-accent">
                   <stat.icon className="h-4 w-4" />
                 </div>
                 <div>
@@ -233,7 +233,7 @@ export default function HomePage() {
                     {stat.label}
                   </p>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
@@ -493,6 +493,49 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coming Soon */}
+      <section className="relative overflow-hidden border-t border-border bg-surface">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-purple-500/5" />
+        <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
+          <div className="text-center">
+            <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-accent" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-accent">
+                Coming Soon
+              </span>
+            </div>
+            <h2 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+              More Features Dropping Soon
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-sm text-muted">
+              We&apos;re building something awesome. These features are in progress.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {comingSoonFeatures.map((feature) => (
+              <div
+                key={feature.title}
+                className="group rounded-xl border border-border bg-surface/80 p-5 backdrop-blur-sm transition-all hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/8 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
+                  <feature.icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-3 text-sm font-bold text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  {feature.description}
+                </p>
+                <div className="mt-3 inline-flex items-center gap-1 rounded-md bg-accent/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent">
+                  Coming Soon
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

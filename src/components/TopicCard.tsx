@@ -11,16 +11,23 @@ interface TopicCardProps {
   subjectId: string;
   unitId: string;
   index: number;
+  branchId?: string;
+  groupId?: string;
 }
 
 export default function TopicRow({
   topic,
   subjectId,
   unitId,
-  index,
+  branchId,
+  groupId,
 }: TopicCardProps) {
   const { isTopicCompleted, toggleTopic } = useProgress();
   const completed = isTopicCompleted(topic.id);
+
+  const href = branchId && groupId
+    ? `/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${topic.id}`
+    : `/semester-1/${subjectId}/${unitId}/${topic.id}`;
 
   return (
     <div
@@ -45,7 +52,7 @@ export default function TopicRow({
       </button>
 
       <Link
-        href={`/semester-1/${subjectId}/${unitId}/${topic.id}`}
+        href={href}
         className="min-w-0 flex-1"
       >
         <span

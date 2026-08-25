@@ -1,15 +1,13 @@
 "use client";
 
-import { use, useEffect } from "react";
+import { use } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getBranch } from "@/data/branches";
 import { subjects } from "@/data/subjects";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TopicRow from "@/components/TopicCard";
-import ProgressBar from "@/components/ProgressBar";
-import { useProgress } from "@/hooks/useProgress";
-import { trackUnitView } from "@/lib/analytics";
 
 export default function BranchUnitPage({
   params,
@@ -17,32 +15,22 @@ export default function BranchUnitPage({
   params: Promise<{ branch: string; group: string; subject: string; unit: string }>;
 }) {
   const { branch: branchId, group: groupId, subject: subjectId, unit: unitId } = use(params);
+  const branch = getBranch(branchId);
+  const group = branch?.groups.find((g) => g.id === groupId);
   const subject = subjects.find((s) => s.id === subjectId);
   const unit = subject?.units.find((u) => u.id === unitId);
-  const { progress } = useProgress();
 
-  if (!subject || !unit) notFound();
-
-  useEffect(() => {
-    trackUnitView(subject.name, unit.title, unit.number);
-  }, [subject.name, unit.title, unit.number]);
+  if (!branch || !group || !subject || !unit) notFound();
 
   const unitIndex = subject.units.findIndex((u) => u.id === unitId);
   const prevUnit = unitIndex > 0 ? subject.units[unitIndex - 1] : null;
-  const nextUnit =
-    unitIndex < subject.units.length - 1
-      ? subject.units[unitIndex + 1]
-      : null;
-
-  const completedCount = unit.topics.filter((t) =>
-    progress.completedTopics.includes(t.id)
-  ).length;
+  const nextUnit = unitIndex < subject.units.length - 1 ? subject.units[unitIndex + 1] : null;
 
   return (
     <div>
       <section className="hero-gradient-subtle relative overflow-hidden">
         <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/select" },
@@ -51,79 +39,46 @@ export default function BranchUnitPage({
             ]}
           />
 
-          <div className="mt-6 flex items-start gap-6">
-            <span className="editorial-number text-6xl sm:text-8xl">
-              {String(unit.number).padStart(2, "0")}
+          <div className="mt-5">
+            <span className="text-xs font-bold uppercase tracking-widest text-white/50">
+              Unit {String(unit.number).padStart(2, "0")}
             </span>
-            <div className="min-w-0 flex-1 pt-2">
-              <p className="text-xs font-bold uppercase tracking-widest text-white/50">
-                Unit {String(unit.number).padStart(2, "0")} &middot;{" "}
-                {subject.name}
+
+            <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+              {unit.title}
+            </h1>
+
+            {unit.description && (
+              <p className="mt-2 max-w-2xl text-sm text-white/60 leading-relaxed">
+                {unit.description}
               </p>
-
-              <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-                {unit.title}
-              </h1>
-
-              {unit.description && (
-                <p className="mt-2 max-w-2xl text-sm text-white/60 leading-relaxed">
-                  {unit.description}
-                </p>
-              )}
-
-              <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-white/60">
-                <span className="font-semibold">
-                  {unit.contactHours} contact hours
-                </span>
-                <span className="tabular-nums">
-                  {completedCount}/{unit.topics.length} topics
-                </span>
-                {unit.mappedCO.length > 0 && (
-                  <span className="flex flex-wrap items-center gap-1">
-                    Maps to:{" "}
-                    {unit.mappedCO.map((co) => (
-                      <span
-                        key={co}
-                        className="rounded-md border border-white/20 px-1.5 py-px text-[10px] font-bold text-white/70"
-                      >
-                        {co}
-                      </span>
-                    ))}
-                  </span>
-                )}
-              </div>
-
-              <div className="mt-4 max-w-sm">
-                <ProgressBar
-                  value={completedCount}
-                  max={unit.topics.length}
-                  size="sm"
-                />
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <section className="mb-10">
-          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted">
-            Topics
-          </h2>
-          <div className="rounded-xl border border-border bg-surface overflow-hidden">
-            {unit.topics.map((topic, i) => (
-              <TopicRow
-                key={topic.id}
-                topic={topic}
-                subjectId={subjectId}
-                unitId={unitId}
-                index={i}
-              />
-            ))}
-          </div>
-        </section>
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-xs font-bold uppercase tracking-widest text-muted">
+            {unit.topics.length} Topics
+          </p>
+        </div>
 
-        <div className="flex items-center justify-between border-t border-border pt-6">
+        <div className="rounded-xl border border-border bg-surface overflow-hidden">
+          {unit.topics.map((topic, i) => (
+            <TopicRow
+              key={topic.id}
+              topic={topic}
+              subjectId={subjectId}
+              unitId={unitId}
+              index={i}
+              branchId={branchId}
+              groupId={groupId}
+            />
+          ))}
+        </div>
+
+        <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
           {prevUnit ? (
             <Link
               href={`/btech/${branchId}/${groupId}/semester-1/${subjectId}/${prevUnit.id}`}
@@ -134,7 +89,7 @@ export default function BranchUnitPage({
               </div>
               <div className="text-left">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-muted">
-                  Previous
+                  Previous Unit
                 </div>
                 <div className="text-[13px] font-semibold text-foreground group-hover:text-accent transition-colors">
                   {prevUnit.title}
@@ -152,7 +107,7 @@ export default function BranchUnitPage({
             >
               <div className="text-right">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-muted">
-                  Next
+                  Next Unit
                 </div>
                 <div className="text-[13px] font-semibold text-foreground group-hover:text-accent transition-colors">
                   {nextUnit.title}

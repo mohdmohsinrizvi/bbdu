@@ -9,9 +9,11 @@ import { getSubjectColor } from "@/lib/constants";
 interface SubjectRowProps {
   subject: Subject;
   index: number;
+  branchId?: string;
+  groupId?: string;
 }
 
-export default function SubjectCard({ subject, index }: SubjectRowProps) {
+export default function SubjectCard({ subject, index, branchId, groupId }: SubjectRowProps) {
   const { progress } = useProgress();
   const totalTopics = subject.units.reduce(
     (acc, unit) => acc + unit.topics.length,
@@ -23,9 +25,13 @@ export default function SubjectCard({ subject, index }: SubjectRowProps) {
   const pct = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
   const colorClass = getSubjectColor(subject.id);
 
+  const href = branchId && groupId
+    ? `/btech/${branchId}/${groupId}/semester-1/${subject.id}`
+    : `/semester-1/${subject.id}`;
+
   return (
     <Link
-      href={`/semester-1/${subject.id}`}
+      href={href}
       className={`group ${colorClass} relative flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6`}
     >
       <div className="subject-accent-bar absolute left-0 top-0 h-full" />

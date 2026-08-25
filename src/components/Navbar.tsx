@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sun, Moon, Menu, X, BookOpen, Search } from "lucide-react";
@@ -35,6 +35,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   const pathname = usePathname();
+
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-xl">
@@ -103,7 +105,7 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-border bg-surface/95 backdrop-blur-xl md:hidden animate-fade-in-up">
+        <div className="border-t border-border bg-surface/95 backdrop-blur-xl md:hidden animate-slide-down">
           <div className="space-y-1 px-4 py-3">
             {navLinks.map((link) => {
               const active =
@@ -113,7 +115,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={closeMobile}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors",
                     active

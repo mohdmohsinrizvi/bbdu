@@ -6,22 +6,22 @@ const nextConfig: NextConfig = {
       {
         source: "/semester-1",
         destination: "/select",
-        permanent: false,
+        permanent: true,
       },
       {
         source: "/semester-1/:subject",
         destination: "/btech/cse/group-a/semester-1/:subject",
-        permanent: false,
+        permanent: true,
       },
       {
         source: "/semester-1/:subject/:unit",
         destination: "/btech/cse/group-a/semester-1/:subject/:unit",
-        permanent: false,
+        permanent: true,
       },
       {
         source: "/semester-1/:subject/:unit/:topic",
         destination: "/btech/cse/group-a/semester-1/:subject/:unit/:topic",
-        permanent: false,
+        permanent: true,
       },
     ];
   },
