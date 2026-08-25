@@ -9,6 +9,7 @@ import Analytics from "@/components/Analytics";
 import PageTransition from "@/components/PageTransition";
 import ScrollToTop from "@/components/ScrollToTop";
 import SearchModal from "@/components/SearchModal";
+import FeedbackButton from "@/components/FeedbackButton";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -96,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <MobileNav />
           <ScrollToTop />
+          <FeedbackButton />
           <SearchModal />
         </div>
         <Analytics />
