@@ -5,13 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sun, Moon, Menu, X, BookOpen, Search } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { useAcademic } from "@/lib/AcademicContext";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { label: "Select", href: "/select" },
-  { label: "Search", href: "/search" },
-  { label: "Progress", href: "/progress" },
-];
 
 function SearchTrigger() {
   return (
@@ -34,14 +29,20 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
   const pathname = usePathname();
+  const { isSetup } = useAcademic();
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
+
+  const navLinks = [
+    { label: "Home", href: "/" },
+    ...(isSetup ? [{ label: "Progress", href: "/progress" }] : []),
+  ];
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white transition-transform group-hover:scale-105">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background transition-transform group-hover:scale-105">
             <BookOpen className="h-4 w-4" />
           </div>
           <div className="hidden sm:block">

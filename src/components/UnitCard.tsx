@@ -11,8 +11,11 @@ interface UnitCardProps {
   unit: Unit;
   subjectId: string;
   completedTopics: string[];
+  programId?: string;
   branchId?: string;
   groupId?: string;
+  yearId?: string;
+  semesterId?: string;
   institutionId?: string;
 }
 
@@ -20,9 +23,12 @@ export default function UnitAccordion({
   unit,
   subjectId,
   completedTopics,
-  branchId,
-  groupId,
-  institutionId,
+  programId = "btech",
+  branchId = "cse",
+  groupId = "group-a",
+  yearId = "first-year",
+  semesterId = "semester-1",
+  institutionId = "bbdu",
 }: UnitCardProps) {
   const [expanded, setExpanded] = useState(false);
   const completedCount = unit.topics.filter((t) =>
@@ -32,11 +38,7 @@ export default function UnitAccordion({
     ? Math.round((completedCount / unit.topics.length) * 100)
     : 0;
 
-  const unitHref = institutionId && branchId && groupId
-    ? `/${institutionId}/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unit.id}`
-    : branchId && groupId
-    ? `/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unit.id}`
-    : `/semester-1/${subjectId}/${unit.id}`;
+  const unitHref = `/${institutionId}/${programId}/${branchId}/${groupId}/${yearId}/${semesterId}/${subjectId}/${unit.id}`;
 
   return (
     <div className="border-b border-border">
@@ -92,8 +94,11 @@ export default function UnitAccordion({
               subjectId={subjectId}
               unitId={unit.id}
               index={i}
+              programId={programId}
               branchId={branchId}
               groupId={groupId}
+              yearId={yearId}
+              semesterId={semesterId}
               institutionId={institutionId}
             />
           ))}

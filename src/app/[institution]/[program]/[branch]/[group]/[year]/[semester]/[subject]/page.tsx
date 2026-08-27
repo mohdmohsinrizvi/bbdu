@@ -3,7 +3,7 @@
 import { use, useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { getBranch } from "@/data/branches";
+import { getInstitution } from "@/data/institutions";
 import { subjects } from "@/data/subjects";
 import { labExperiments } from "@/data/labExperiments";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -14,18 +14,33 @@ import { useProgress } from "@/hooks/useProgress";
 import { getCategoryLabel } from "@/lib/utils";
 import { trackSubjectView } from "@/lib/analytics";
 
-export default function BranchSubjectPage({
+export default function SubjectPage({
   params,
 }: {
-  params: Promise<{ branch: string; group: string; subject: string }>;
+  params: Promise<{
+    institution: string;
+    program: string;
+    branch: string;
+    group: string;
+    year: string;
+    semester: string;
+    subject: string;
+  }>;
 }) {
-  const { branch: branchId, group: groupId, subject: subjectId } = use(params);
-  const branch = getBranch(branchId);
-  const group = branch?.groups.find((g) => g.id === groupId);
+  const {
+    institution: instId,
+    program: progId,
+    branch: branchId,
+    group: groupId,
+    year: yearId,
+    semester: semId,
+    subject: subjectId,
+  } = use(params);
+  const institution = getInstitution(instId);
   const subject = subjects.find((s) => s.id === subjectId);
   const { progress } = useProgress();
 
-  if (!branch || !group || !subject) notFound();
+  if (!institution || !subject) notFound();
 
   useEffect(() => {
     trackSubjectView(subject.name, subject.code);
@@ -40,41 +55,44 @@ export default function BranchSubjectPage({
     .flatMap((u) => u.topics)
     .filter((t) => progress.completedTopics.includes(t.id)).length;
 
+  const base = `/${instId}/${progId}/${branchId}/${groupId}/${yearId}/${semId}`;
+
   return (
     <div>
-      <section className="hero-gradient-subtle relative overflow-hidden">
-        <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="noise-overlay absolute inset-0" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <Breadcrumbs
             items={[
-              { label: "Home", href: "/select" },
-              { label: branch.shortName, href: "/select" },
-              { label: group.name, href: `/btech/${branchId}/${groupId}/semester-1` },
+              { label: "Home", href: "/" },
+              { label: institution.shortName, href: `/` },
+              {
+                label: subject.name,
+                href: `${base}`,
+              },
               { label: subject.name },
             ]}
           />
 
-          <div className="mt-6">
+          <div className="mt-5">
             <div className="flex items-center gap-2 mb-2">
-              <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/70">
+              <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
                 {getCategoryLabel(subject.category)}
               </span>
-              <span className="text-xs font-medium text-white/50">
+              <span className="text-xs font-medium text-muted">
                 {subject.code}
               </span>
               {subject.type === "lab" && (
-                <span className="rounded-md bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase text-white/70">
+                <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase text-muted">
                   Lab
                 </span>
               )}
             </div>
 
-            <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {subject.name}
             </h1>
 
-            <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-white/60">
+            <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted">
               <span className="font-semibold">
                 {subject.credits} Credits
               </span>
@@ -144,6 +162,7 @@ export default function BranchSubjectPage({
                   completedTopics={progress.completedTopics}
                   branchId={branchId}
                   groupId={groupId}
+                  institutionId={instId}
                 />
               ))}
             </div>

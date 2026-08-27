@@ -11,8 +11,11 @@ interface TopicCardProps {
   subjectId: string;
   unitId: string;
   index: number;
+  programId?: string;
   branchId?: string;
   groupId?: string;
+  yearId?: string;
+  semesterId?: string;
   institutionId?: string;
 }
 
@@ -20,18 +23,17 @@ export default function TopicRow({
   topic,
   subjectId,
   unitId,
-  branchId,
-  groupId,
-  institutionId,
+  programId = "btech",
+  branchId = "cse",
+  groupId = "group-a",
+  yearId = "first-year",
+  semesterId = "semester-1",
+  institutionId = "bbdu",
 }: TopicCardProps) {
   const { isTopicCompleted, toggleTopic } = useProgress();
   const completed = isTopicCompleted(topic.id);
 
-  const href = institutionId && branchId && groupId
-    ? `/${institutionId}/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${topic.id}`
-    : branchId && groupId
-    ? `/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${topic.id}`
-    : `/semester-1/${subjectId}/${unitId}/${topic.id}`;
+  const href = `/${institutionId}/${programId}/${branchId}/${groupId}/${yearId}/${semesterId}/${subjectId}/${unitId}/${topic.id}`;
 
   return (
     <div

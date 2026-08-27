@@ -58,3 +58,27 @@ export function trackInstallSuccess() {
 export function trackInstallDismissed() {
   gtag("event", "pwa_install_dismissed");
 }
+
+export function trackInstitutionSelected(institutionId: string) {
+  gtag("event", "institution_selected", { institution: institutionId });
+}
+
+export function trackCourseSelected(courseId: string) {
+  gtag("event", "course_selected", { course: courseId });
+}
+
+export function trackBranchSelected(branchId: string) {
+  gtag("event", "branch_selected", { branch: branchId });
+}
+
+export function trackYearSelected(yearId: string) {
+  gtag("event", "year_selected", { year: yearId });
+}
+
+export function trackSemesterSelected(semesterId: string) {
+  gtag("event", "semester_selected", { semester: semesterId });
+}
+
+export function trackAcademicProfileComplete(institution: string, program: string, branch: string, year: string, semester: string) {
+  gtag("event", "academic_profile_selected", { institution, program, branch, year, semester });
+}

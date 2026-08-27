@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { subjects } from "@/data/subjects";
+import { bbniitSubjects } from "@/data/bbniit/subjects";
 import { cn } from "@/lib/utils";
 import { trackSearch } from "@/lib/analytics";
 
@@ -13,6 +14,8 @@ interface SearchResult {
   subtitle: string;
   href: string;
 }
+
+const allSubjects = [...subjects, ...bbniitSubjects];
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -30,12 +33,11 @@ export default function SearchBar() {
     const lower = q.toLowerCase();
     const found: SearchResult[] = [];
 
-    for (const subject of subjects) {
-      const instId = subject.id.startsWith("bbniit-") ? "bbniit" : "bbdu";
-      const branchId = "cse";
-      const groupId =
-        instId === "bbniit" ? "cse-stream" : "group-a";
-      const base = `/${instId}/btech/${branchId}/${groupId}/semester-1`;
+    for (const subject of allSubjects) {
+      const inst = subject.institution || "bbdu";
+      const prefix = inst === "bbniit"
+        ? "/bbniit/btech/cse/cse-stream/first-year/semester-1"
+        : "/bbdu/btech/cse/group-a/first-year/semester-1";
 
       if (
         subject.name.toLowerCase().includes(lower) ||
@@ -44,8 +46,8 @@ export default function SearchBar() {
         found.push({
           type: "subject",
           title: subject.name,
-          subtitle: `${subject.code} · ${instId === "bbniit" ? "BBDNIIT" : "BBDU"}`,
-          href: `${base}/${subject.id}`,
+          subtitle: `${subject.code} · ${inst === "bbniit" ? "BBDNIIT" : "BBDU"}`,
+          href: `${prefix}/${subject.id}`,
         });
       }
       for (const unit of subject.units) {
@@ -54,7 +56,7 @@ export default function SearchBar() {
             type: "unit",
             title: unit.title,
             subtitle: `${subject.name} — Unit ${unit.number}`,
-            href: `${base}/${subject.id}/${unit.id}`,
+            href: `${prefix}/${subject.id}/${unit.id}`,
           });
         }
         for (const topic of unit.topics) {
@@ -63,7 +65,7 @@ export default function SearchBar() {
               type: "topic",
               title: topic.title,
               subtitle: `${subject.name} — ${unit.title}`,
-              href: `${base}/${subject.id}/${unit.id}/${topic.id}`,
+              href: `${prefix}/${subject.id}/${unit.id}/${topic.id}`,
             });
           }
         }

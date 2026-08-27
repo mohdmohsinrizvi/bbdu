@@ -1,83 +1,153 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  GraduationCap,
-  Play,
-  ChevronRight,
-  Layers,
-  FileText,
-  Sparkles,
-  Brain,
-  MessageCircle,
-  Trophy,
-} from "lucide-react";
-import { subjects } from "@/data/subjects";
+import { Suspense } from "react";
+import { ArrowRight, Play, Settings, BookOpen } from "lucide-react";
+import { useAcademic } from "@/lib/AcademicContext";
+import { getSubjects } from "@/lib/branchUtils";
+import { getInstitution, getBranch, getGroup, getYear } from "@/data/institutions";
 import { useProgress } from "@/hooks/useProgress";
 import { trackContinueLearning } from "@/lib/analytics";
 import { getSubjectColor } from "@/lib/constants";
 import InstallSection from "@/components/InstallSection";
 
-const theorySubjects = subjects.filter((s) => s.type === "theory");
-const bbduTheory = subjects.filter(
-  (s) => s.type === "theory" && (!s.institution || s.institution === "bbdu")
-);
-const bbniitTheory = subjects.filter(
-  (s) => s.type === "theory" && s.institution === "bbniit"
-);
-
-const comingSoonFeatures = [
-  {
-    icon: Brain,
-    title: "AI Study Assistant",
-    description: "Instant doubt clearing and personalized study plans.",
-  },
-  {
-    icon: BookOpen,
-    title: "Notes & Bookmarks",
-    description: "Save topics, add notes, bookmark resources.",
-  },
-  {
-    icon: Trophy,
-    title: "Quizzes & Practice",
-    description: "Test knowledge with topic-wise quizzes.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Discussion Forums",
-    description: "Connect with peers and share materials.",
-  },
-];
-
-export default function HomePage() {
+function HomeContent() {
+  const { profile, isSetup } = useAcademic();
   const { progress } = useProgress();
-  const router = useRouter();
 
-  useEffect(() => {
-    const inst = localStorage.getItem("bbdu-institution");
-    const branch = localStorage.getItem("bbdu-branch");
-    const group = localStorage.getItem("bbdu-group");
-    if (inst && branch && group) {
-      router.push(`/${inst}/btech/${branch}/${group}/semester-1`);
-    } else if (branch && group) {
-      router.push(`/bbdu/btech/${branch}/${group}/semester-1`);
-    }
-  }, [router]);
+  if (!isSetup || !profile) {
+    return <LandingView />;
+  }
 
-  const allTopics = subjects.flatMap((s) => s.units.flatMap((u) => u.topics));
+  return <StudyHubView profile={profile} progress={progress} />;
+}
+
+function LandingView() {
+  return (
+    <div>
+      {/* Hero — editorial, not marketing */}
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+              Study Hub
+            </h1>
+            <p className="mt-4 text-base leading-relaxed text-muted max-w-lg">
+              Academic syllabus, curated lectures, and progress tracking for B.Tech students at BBD institutions.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-[13px] font-semibold text-background transition-all hover:opacity-90"
+              >
+                Set up your study space
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Institution cards */}
+      <section className="py-12 sm:py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted mb-6">
+            Institutions
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Link
+              href="/onboarding"
+              className="group rounded-xl border border-border bg-surface p-6 transition-all hover:border-foreground/20 hover:bg-surface-hover"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-hover">
+                  <BookOpen className="h-5 w-5 text-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                    BBD University
+                  </h3>
+                  <p className="text-xs text-muted">BBDU</p>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-muted leading-relaxed">
+                University curriculum — B.Tech CSE first year with 11 subjects across theory and labs.
+              </p>
+              <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-accent">
+                Get started
+                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+              </div>
+            </Link>
+
+            <Link
+              href="/onboarding"
+              className="group rounded-xl border border-border bg-surface p-6 transition-all hover:border-foreground/20 hover:bg-surface-hover"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-hover">
+                  <BookOpen className="h-5 w-5 text-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                    BBDNIIT
+                  </h3>
+                  <p className="text-xs text-muted">AKTU Curriculum</p>
+                </div>
+              </div>
+              <p className="mt-3 text-sm text-muted leading-relaxed">
+                AKTU syllabus — B.Tech CSE first year with 12 subjects following the latest AKTU structure.
+              </p>
+              <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-accent">
+                Get started
+                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <InstallSection />
+
+      <section className="border-t border-border py-6">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <p className="text-center text-xs text-muted">
+            Student-built learning resource. Always verify academic information with official sources.
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function StudyHubView({
+  profile,
+  progress,
+}: {
+  profile: { institutionId: string; programId: string; branchId: string; groupId: string; yearId: string; semesterId: string };
+  progress: { completedTopics: string[]; startedSubjects: string[] };
+}) {
+  const institution = getInstitution(profile.institutionId);
+  const branch = getBranch(profile.institutionId, profile.programId, profile.branchId);
+  const group = getGroup(profile.institutionId, profile.programId, profile.branchId, profile.groupId);
+  const year = getYear(profile.institutionId, profile.programId, profile.branchId, profile.groupId, profile.yearId);
+  const semester = year?.semesters.find((s) => s.id === profile.semesterId);
+
+  const semSubjects = getSubjects(
+    profile.institutionId,
+    profile.programId,
+    profile.branchId,
+    profile.groupId,
+    profile.yearId,
+    profile.semesterId,
+  );
+
+  const allTopics = semSubjects.flatMap((s) => s.units.flatMap((u) => u.topics));
   const totalTopics = allTopics.length;
-  const completedTopics = progress.completedTopics.length;
+  const completedCount = progress.completedTopics.length;
 
+  // Continue learning
   const continueSubject = progress.startedSubjects.length > 0
-    ? subjects.find(
-        (s) =>
-          s.id ===
-          progress.startedSubjects[progress.startedSubjects.length - 1]
-      )
+    ? semSubjects.find((s) => s.id === progress.startedSubjects[progress.startedSubjects.length - 1])
     : null;
 
   const continueUnit = continueSubject?.units.find((u) =>
@@ -90,10 +160,7 @@ export default function HomePage() {
 
   const continuePercent = continueSubject
     ? (() => {
-        const total = continueSubject.units.reduce(
-          (a, u) => a + u.topics.length,
-          0
-        );
+        const total = continueSubject.units.reduce((a, u) => a + u.topics.length, 0);
         const done = continueSubject.units
           .flatMap((u) => u.topics)
           .filter((t) => progress.completedTopics.includes(t.id)).length;
@@ -101,175 +168,59 @@ export default function HomePage() {
       })()
     : 0;
 
+  const prefix = `/${profile.institutionId}/${profile.programId}/${profile.branchId}/${profile.groupId}/${profile.yearId}/${profile.semesterId}`;
+
   return (
     <div>
-      {/* Hero */}
-      <section className="hero-gradient relative overflow-hidden">
-        <div className="grid-bg absolute inset-0" />
-        <div className="noise-overlay absolute inset-0" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
-            <div className="flex-1 stagger-children">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70 backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                B.Tech CSE &middot; Semester 1 &middot; 2026&ndash;27
-              </div>
-
-              <h1 className="mt-5 text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-5xl">
-                Your Semester.
-                <br />
-                Your Syllabus.
-                <br />
-                <span className="text-white/80">
-                  Your Way to Learn.
+      {/* Hero — minimal */}
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                  {institution?.shortName}
                 </span>
+                <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                  {year?.label}
+                </span>
+                <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                  {semester?.label}
+                </span>
+              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+                Study Hub
               </h1>
-
-              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
-                Explore {subjects.length} subjects across 2 institutions, with curated
-                video lessons &mdash; all mapped to your B.Tech CSE curriculum.
+              <p className="mt-1 text-sm text-muted">
+                {branch?.name} &middot; {group?.name}
               </p>
-
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Link
-                  href="/select"
-                  className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-[13px] font-semibold text-indigo-900 transition-all hover:bg-white/90 hover:shadow-lg hover:shadow-white/10"
-                >
-                  Get Started
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-                <Link
-                  href="/progress"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-5 py-2.5 text-[13px] font-medium text-white backdrop-blur-sm transition-all hover:bg-white/10"
-                >
-                  View Progress
-                </Link>
-              </div>
             </div>
-
-            {/* Floating curriculum card */}
-            <div className="flex-shrink-0 lg:w-[340px]">
-              <div className="rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
-                <div className="mb-4 flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-                    <GraduationCap className="h-4 w-4 text-white/80" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-white">Semester 01</p>
-                    <p className="text-[10px] text-white/50">
-                      Group 1 / Group A
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  {theorySubjects.slice(0, 4).map((s, i) => {
-                    const total = s.units.reduce(
-                      (a, u) => a + u.topics.length,
-                      0
-                    );
-                    const done = s.units
-                      .flatMap((u) => u.topics)
-                      .filter((t) =>
-                        progress.completedTopics.includes(t.id)
-                      ).length;
-                    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-                    return (
-                      <div
-                        key={s.id}
-                        className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2"
-                      >
-                        <span className="text-[10px] font-bold text-white/40 tabular-nums">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-xs font-medium text-white/90">
-                            {s.name}
-                          </p>
-                          <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/10">
-                            <div
-                              className="h-full rounded-full bg-white/40 transition-all duration-700"
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-medium text-white/40 tabular-nums">
-                          {pct}%
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <Link
-                  href="/select"
-                  className="mt-3 flex items-center justify-center gap-1 rounded-lg bg-white/5 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
-                >
-                  View all {subjects.length} subjects
-                  <ChevronRight className="h-3 w-3" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Stats */}
-      <section className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4">
-            {[
-              { label: "Subjects", value: subjects.length, icon: Layers },
-              { label: "Topics", value: totalTopics, icon: FileText },
-              { label: "Videos", value: "50+", icon: Play },
-              { label: "Completed", value: completedTopics, icon: BookOpen },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="flex items-center gap-3 border-r border-border px-4 py-4 last:border-r-0"
-              >
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/8 text-accent">
-                  <stat.icon className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-lg font-bold tabular-nums text-foreground">
-                    {stat.value}
-                  </p>
-                  <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
-                    {stat.label}
-                  </p>
-                </div>
-              </div>
-            ))}
+            <Link
+              href="/onboarding"
+              className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted transition-all hover:border-foreground/20 hover:text-foreground"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Change</span>
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Continue Learning */}
-      {completedTopics > 0 && continueSubject && continueTopic && (
-        <section className="section-tinted">
-          <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-muted">
-                Continue Learning
-              </h2>
-              <Link
-                href={`/bbdu/btech/cse/group-a/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
-                className="text-xs font-semibold text-accent hover:text-accent-hover transition-colors"
-              >
-                Skip to topic
-              </Link>
-            </div>
-
+      {completedCount > 0 && continueSubject && continueTopic && (
+        <section className="border-b border-border">
+          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted">
+              Continue Learning
+            </h2>
             <Link
-              href={`/bbdu/btech/cse/group-a/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
+              href={`${prefix}/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
               onClick={() => trackContinueLearning(continueSubject.name, continueUnit?.title || "", continueTopic.title)}
-              className="group card-hover block rounded-xl border border-border bg-surface p-5 sm:p-6"
+              className="group block rounded-xl border border-border bg-surface p-5 transition-all hover:border-foreground/20 hover:bg-surface-hover"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="subject-accent-bar h-5" />
+                  <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted">
                       {continueSubject.code}
                     </span>
@@ -281,7 +232,6 @@ export default function HomePage() {
                     Next: {continueTopic.title}
                   </p>
                 </div>
-
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <p className="text-2xl font-extrabold tabular-nums text-accent">
@@ -301,337 +251,122 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* Stats */}
+      <section className="border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="grid grid-cols-3 divide-x divide-border">
+            <div className="px-4 py-4">
+              <p className="text-lg font-bold tabular-nums text-foreground">{semSubjects.length}</p>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted">Subjects</p>
+            </div>
+            <div className="px-4 py-4">
+              <p className="text-lg font-bold tabular-nums text-foreground">{totalTopics}</p>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted">Topics</p>
+            </div>
+            <div className="px-4 py-4">
+              <p className="text-lg font-bold tabular-nums text-accent">{completedCount}</p>
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted">Completed</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Subjects */}
-      <section className="py-10 sm:py-12">
+      <section className="py-8 sm:py-10">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex items-end justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-extrabold tracking-tight text-foreground">
-                All Subjects
-              </h2>
-              <p className="mt-1 text-sm text-muted">
-                BBDU &amp; BBDNIIT &middot; {subjects.length} subjects
-              </p>
-            </div>
-            <Link
-              href="/select"
-              className="hidden items-center gap-1 text-xs font-semibold text-accent hover:text-accent-hover sm:flex"
-            >
-              Choose your path
-              <ChevronRight className="h-3 w-3" />
-            </Link>
-          </div>
-
-          {/* BBDU Subjects */}
-          {bbduTheory.length > 0 && (
-            <div className="mb-8">
-              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
-                BBD University
-              </h3>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {bbduTheory.slice(0, 6).map((subject, i) => {
-                  const totalTopicsCount = subject.units.reduce(
-                    (acc, u) => acc + u.topics.length,
-                    0
-                  );
-                  const subjectCompleted = subject.units
-                    .flatMap((u) => u.topics)
-                    .filter((t) => progress.completedTopics.includes(t.id))
-                    .length;
-                  const pct =
-                    totalTopicsCount > 0
-                      ? Math.round((subjectCompleted / totalTopicsCount) * 100)
-                      : 0;
-                  const colorClass = getSubjectColor(subject.id);
-
-                  return (
-                    <Link
-                      key={subject.id}
-                      href={`/bbdu/btech/cse/group-a/semester-1/${subject.id}`}
-                      className={`group ${colorClass} card-hover relative overflow-hidden rounded-xl border border-border bg-surface p-5 transition-all`}
-                    >
-                      <div className="subject-accent-bar absolute left-0 top-0 h-full" />
-                      <div className="pl-3">
-                        <div className="flex items-start justify-between">
-                          <span className="editorial-number text-[2.5rem]">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
-                            {subject.credits} Credits
-                          </span>
-                        </div>
-
-                        <h3 className="mt-2 text-base font-bold text-foreground group-hover:text-accent transition-colors">
-                          {subject.name}
-                        </h3>
-
-                        <p className="mt-1 text-xs text-muted">
-                          {subject.code} &middot; {subject.units.length} Units
-                        </p>
-
-                        <div className="mt-3 flex items-center gap-3">
-                          <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-border">
-                            <div
-                              className="h-full rounded-full bg-accent animate-progress transition-all duration-700"
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold tabular-nums text-muted">
-                            {subjectCompleted}/{totalTopicsCount}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* BBDNIIT Subjects */}
-          {bbniitTheory.length > 0 && (
-            <div>
-              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
-                BBDNIIT
-              </h3>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {bbniitTheory.slice(0, 6).map((subject, i) => {
-                  const totalTopicsCount = subject.units.reduce(
-                    (acc, u) => acc + u.topics.length,
-                    0
-                  );
-                  const subjectCompleted = subject.units
-                    .flatMap((u) => u.topics)
-                    .filter((t) => progress.completedTopics.includes(t.id))
-                    .length;
-                  const pct =
-                    totalTopicsCount > 0
-                      ? Math.round((subjectCompleted / totalTopicsCount) * 100)
-                      : 0;
-                  const colorClass = getSubjectColor(subject.id);
-
-                  return (
-                    <Link
-                      key={subject.id}
-                      href={`/bbniit/btech/cse/cse-stream/semester-1/${subject.id}`}
-                      className={`group ${colorClass} card-hover relative overflow-hidden rounded-xl border border-border bg-surface p-5 transition-all`}
-                    >
-                      <div className="subject-accent-bar absolute left-0 top-0 h-full" />
-                      <div className="pl-3">
-                        <div className="flex items-start justify-between">
-                          <span className="editorial-number text-[2.5rem]">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
-                            {subject.credits} Credits
-                          </span>
-                        </div>
-
-                        <h3 className="mt-2 text-base font-bold text-foreground group-hover:text-accent transition-colors">
-                          {subject.name}
-                        </h3>
-
-                        <p className="mt-1 text-xs text-muted">
-                          {subject.code} &middot; {subject.units.length} Units
-                        </p>
-
-                        <div className="mt-3 flex items-center gap-3">
-                          <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-border">
-                            <div
-                              className="h-full rounded-full bg-accent animate-progress transition-all duration-700"
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold tabular-nums text-muted">
-                            {subjectCompleted}/{totalTopicsCount}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="section-tinted py-10 sm:py-12">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-2xl font-extrabold tracking-tight text-foreground mb-6">
-            How It Works
+          <h2 className="mb-5 text-xs font-bold uppercase tracking-widest text-muted">
+            Subjects
           </h2>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                step: "01",
-                title: "Choose Subject",
-                desc: "Browse all semester subjects with mapped course outcomes.",
-                icon: BookOpen,
-              },
-              {
-                step: "02",
-                title: "Pick a Unit",
-                desc: "Each unit maps to specific course outcomes and contact hours.",
-                icon: Layers,
-              },
-              {
-                step: "03",
-                title: "Watch Lesson",
-                desc: "Curated YouTube videos from verified educational channels.",
-                icon: Play,
-              },
-              {
-                step: "04",
-                title: "Track Progress",
-                desc: "Mark topics as completed and track your semester progress.",
-                icon: GraduationCap,
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="group relative rounded-xl border border-border bg-surface p-5 transition-all card-hover"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/8 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
-                  <item.icon className="h-5 w-5" />
-                </div>
-                <span className="mt-3 block text-[10px] font-bold uppercase tracking-widest text-muted">
-                  Step {item.step}
-                </span>
-                <h3 className="mt-1 text-sm font-bold text-foreground">
-                  {item.title}
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-muted">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Semester Explorer */}
-      <section className="py-10 sm:py-12">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="rounded-xl border border-border bg-surface overflow-hidden">
-            <div className="hero-gradient-subtle px-6 py-8">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/50">
-                Visual Flow
-              </p>
-              <h2 className="mt-2 text-xl font-extrabold text-white">
-                Semester 01
-              </h2>
-              <p className="mt-1 text-sm text-white/60">
-                B.Tech CSE &middot; 2026&ndash;27
-              </p>
-            </div>
+            {semSubjects.map((subject, i) => {
+              const totalTopicsCount = subject.units.reduce(
+                (acc, u) => acc + u.topics.length,
+                0
+              );
+              const subjectCompleted = subject.units
+                .flatMap((u) => u.topics)
+                .filter((t) => progress.completedTopics.includes(t.id))
+                .length;
+              const pct =
+                totalTopicsCount > 0
+                  ? Math.round((subjectCompleted / totalTopicsCount) * 100)
+                  : 0;
+              const colorClass = getSubjectColor(subject.id);
 
-            <div className="px-6 py-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-                {[
-                  {
-                    icon: Layers,
-                    label: "SUBJECTS",
-                    value: `${subjects.length} Subjects`,
-                  },
-                  {
-                    icon: FileText,
-                    label: "UNITS",
-                    value: `${theorySubjects.reduce((a, s) => a + s.units.length, 0)} Units`,
-                  },
-                  {
-                    icon: BookOpen,
-                    label: "TOPICS",
-                    value: `${totalTopics} Topics`,
-                  },
-                  {
-                    icon: Play,
-                    label: "LESSONS",
-                    value: "50+ Videos",
-                  },
-                ].map((item, i) => (
-                  <div key={item.label} className="flex items-center gap-3">
-                    {i > 0 && (
-                      <ChevronRight className="hidden h-4 w-4 text-muted sm:block" />
-                    )}
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/8 text-accent">
-                        <item.icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted">
-                          {item.label}
-                        </p>
-                        <p className="text-sm font-bold text-foreground">
-                          {item.value}
-                        </p>
-                      </div>
+              return (
+                <Link
+                  key={subject.id}
+                  href={`${prefix}/${subject.id}`}
+                  className={`group ${colorClass} relative flex items-center gap-4 border-b border-border py-4 transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6 last:border-b-0`}
+                >
+                  <div className="subject-accent-bar absolute left-0 top-0 h-full" />
+                  <span className="w-10 flex-shrink-0 text-right text-2xl font-extrabold tabular-nums text-border-strong">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1 pl-2">
+                    <span className="truncate text-[15px] font-bold text-foreground group-hover:text-accent transition-colors">
+                      {subject.name}
+                    </span>
+                    <div className="mt-1 flex items-center gap-2 text-xs text-muted">
+                      <span className="font-medium">{subject.code}</span>
+                      {subject.type === "lab" && (
+                        <span className="rounded-md border border-border px-1.5 py-px text-[10px] font-bold uppercase text-muted">
+                          Lab
+                        </span>
+                      )}
+                      {subject.type === "theory" && (
+                        <>
+                          <span className="text-border">&middot;</span>
+                          <span>{subject.credits} Credits</span>
+                          <span className="text-border">&middot;</span>
+                          <span>{subject.units.length} Units</span>
+                          {totalTopicsCount > 0 && (
+                            <>
+                              <span className="text-border">&middot;</span>
+                              <span className="tabular-nums">
+                                {subjectCompleted}/{totalTopicsCount}
+                              </span>
+                            </>
+                          )}
+                        </>
+                      )}
                     </div>
+                    {totalTopicsCount > 0 && (
+                      <div className="mt-2 h-1 max-w-[200px] overflow-hidden rounded-full bg-border">
+                        <div
+                          className="h-full rounded-full bg-accent transition-all duration-500"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            </div>
+                  <span className="text-lg text-border-strong transition-all group-hover:text-accent group-hover:translate-x-1">
+                    &rarr;
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Install App */}
       <InstallSection />
 
-      {/* Coming Soon */}
-      <section className="relative overflow-hidden border-t border-border bg-surface">
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-purple-500/5" />
-        <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
-          <div className="text-center">
-            <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-accent" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-accent">
-                Coming Soon
-              </span>
-            </div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-              More Features Dropping Soon
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm text-muted">
-              We&apos;re building something awesome. These features are in progress.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {comingSoonFeatures.map((feature) => (
-              <div
-                key={feature.title}
-                className="group rounded-xl border border-border bg-surface/80 p-5 backdrop-blur-sm transition-all hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/8 text-accent transition-colors group-hover:bg-accent group-hover:text-white">
-                  <feature.icon className="h-5 w-5" />
-                </div>
-                <h3 className="mt-3 text-sm font-bold text-foreground">
-                  {feature.title}
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-muted">
-                  {feature.description}
-                </p>
-                <div className="mt-3 inline-flex items-center gap-1 rounded-md bg-accent/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent">
-                  Coming Soon
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Disclaimer */}
       <section className="border-t border-border py-6">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-center text-xs text-muted">
-            Student-built learning resource. Always verify academic information
-            with official BBDU sources.
+            Student-built learning resource. Always verify academic information with official sources.
           </p>
         </div>
       </section>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
   );
 }

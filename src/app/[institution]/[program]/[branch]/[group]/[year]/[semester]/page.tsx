@@ -4,68 +4,73 @@ import { use } from "react";
 import { notFound } from "next/navigation";
 import {
   getInstitution,
-  getInstitutionBranch,
-  getInstitutionGroup,
+  getProgram,
+  getBranch,
+  getGroup,
+  getYear,
 } from "@/data/institutions";
-import { getSubjectsForInstitutionGroup } from "@/lib/branchUtils";
+import { getSubjects } from "@/lib/branchUtils";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SubjectCard from "@/components/SubjectCard";
 
-export default function InstitutionSemesterPage({
+export default function SemesterPage({
   params,
 }: {
   params: Promise<{
     institution: string;
+    program: string;
     branch: string;
     group: string;
+    year: string;
+    semester: string;
   }>;
 }) {
-  const { institution: instId, branch: branchId, group: groupId } = use(params);
+  const { institution: instId, program: progId, branch: branchId, group: groupId, year: yearId, semester: semId } = use(params);
   const institution = getInstitution(instId);
-  const instBranch = getInstitutionBranch(instId, branchId);
-  const instGroup = getInstitutionGroup(instId, branchId, groupId);
+  const program = getProgram(instId, progId);
+  const branch = getBranch(instId, progId, branchId);
+  const group = getGroup(instId, progId, branchId, groupId);
+  const year = getYear(instId, progId, branchId, groupId, yearId);
 
-  if (!institution || !instBranch || !instGroup) notFound();
+  if (!institution || !program || !branch || !group || !year) notFound();
 
-  const groupSubjects = getSubjectsForInstitutionGroup(
-    instId,
-    branchId,
-    groupId
-  );
+  const semester = year.semesters.find((s) => s.id === semId);
+  if (!semester) notFound();
 
-  const theorySubjects = groupSubjects.filter((s) => s.type === "theory");
-  const labSubjects = groupSubjects.filter((s) => s.type === "lab");
+  const semSubjects = getSubjects(instId, progId, branchId, groupId, yearId, semId);
+  const theorySubjects = semSubjects.filter((s) => s.type === "theory");
+  const labSubjects = semSubjects.filter((s) => s.type === "lab");
 
   return (
     <div>
-      <section className="hero-gradient-subtle relative overflow-hidden">
-        <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="noise-overlay absolute inset-0" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
               { label: institution.shortName, href: `/` },
-              { label: instBranch.shortName, href: `/` },
-              { label: instGroup.name },
+              { label: branch.shortName, href: `/` },
+              { label: group.name, href: `/` },
+              { label: year.label, href: `/` },
+              { label: semester.label },
             ]}
           />
 
-          <div className="mt-6">
+          <div className="mt-5">
             <div className="flex items-center gap-2 mb-2">
-              <span
-                className="rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white/70"
-                style={{ backgroundColor: `${institution.color}33` }}
-              >
+              <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
                 {institution.shortName}
               </span>
+              <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                {year.label}
+              </span>
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              {instBranch.name}
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+              {branch.name}
             </h1>
-            <p className="mt-2 text-sm text-white/60">
-              {instGroup.name} &middot; Semester 1 &middot;{" "}
-              {groupSubjects.length} subjects
+            <p className="mt-2 text-sm text-muted">
+              {group.name} &middot; {semester.label} &middot;{" "}
+              {semSubjects.length} subjects
             </p>
           </div>
         </div>

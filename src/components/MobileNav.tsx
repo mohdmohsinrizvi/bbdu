@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, Search, BarChart3 } from "lucide-react";
+import { Home, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const items = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Branch", href: "/select", icon: BookOpen },
-  { label: "Search", href: "/search", icon: Search },
-  { label: "Progress", href: "/progress", icon: BarChart3 },
-];
+import { useAcademic } from "@/lib/AcademicContext";
 
 export default function MobileNav() {
   const pathname = usePathname();
+  const { isSetup } = useAcademic();
+
+  const items = [
+    { label: "Home", href: "/", icon: Home },
+    ...(isSetup ? [{ label: "Progress", href: "/progress", icon: BarChart3 }] : []),
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface/90 backdrop-blur-xl md:hidden safe-area-bottom">

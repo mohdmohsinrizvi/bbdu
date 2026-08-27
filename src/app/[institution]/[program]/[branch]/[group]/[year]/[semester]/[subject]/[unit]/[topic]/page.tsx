@@ -20,13 +20,16 @@ import { useProgress } from "@/hooks/useProgress";
 import { trackTopicView, trackVideoOpen, trackTopicCompleted } from "@/lib/analytics";
 import type { Video } from "@/data/types";
 
-export default function InstitutionTopicPage({
+export default function TopicPage({
   params,
 }: {
   params: Promise<{
     institution: string;
+    program: string;
     branch: string;
     group: string;
+    year: string;
+    semester: string;
     subject: string;
     unit: string;
     topic: string;
@@ -34,8 +37,11 @@ export default function InstitutionTopicPage({
 }) {
   const {
     institution: instId,
+    program: progId,
     branch: branchId,
     group: groupId,
+    year: yearId,
+    semester: semId,
     subject: subjectId,
     unit: unitId,
     topic: topicId,
@@ -71,7 +77,7 @@ export default function InstitutionTopicPage({
 
   const completed = isTopicCompleted(topicId);
 
-  const base = `/${instId}/btech/${branchId}/${groupId}/semester-1`;
+  const base = `/${instId}/${progId}/${branchId}/${groupId}/${yearId}/${semId}`;
 
   const handleVideoOpen = (video: Video) => {
     setActiveVideo(video);
@@ -94,9 +100,8 @@ export default function InstitutionTopicPage({
     <div>
       <Confetti trigger={showConfetti} />
 
-      <section className="hero-gradient-subtle relative overflow-hidden">
-        <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <Breadcrumbs
             items={[
               { label: "Home", href: "/" },
@@ -114,21 +119,21 @@ export default function InstitutionTopicPage({
 
           <div className="mt-5">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-white/50">
+              <span className="text-xs font-bold uppercase tracking-widest text-muted">
                 Unit {String(unit.number).padStart(2, "0")}
               </span>
-              <ChevronRight className="h-3 w-3 text-white/30" />
-              <span className="text-xs font-medium text-white/50">
+              <ChevronRight className="h-3 w-3 text-muted" />
+              <span className="text-xs font-medium text-muted">
                 Topic {topicIndex + 1} of {unit.topics.length}
               </span>
             </div>
 
-            <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {topic.title}
             </h1>
 
             {topic.description && (
-              <p className="mt-2 max-w-2xl text-sm text-white/60 leading-relaxed">
+              <p className="mt-2 max-w-2xl text-sm text-muted leading-relaxed">
                 {topic.description}
               </p>
             )}
@@ -153,10 +158,10 @@ export default function InstitutionTopicPage({
                   <Circle className="h-6 w-6 text-muted" />
                 </div>
                 <p className="text-sm font-medium text-muted">
-                  No video available for this topic yet.
+                  Lecture coming soon
                 </p>
                 <p className="mt-1 text-xs text-muted/70">
-                  Videos will be added soon.
+                  A curated video for this topic will be added here.
                 </p>
               </div>
             )}

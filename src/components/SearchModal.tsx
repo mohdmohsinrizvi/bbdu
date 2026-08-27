@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search, FileText, Layers, BookOpen } from "lucide-react";
 import { subjects } from "@/data/subjects";
+import { bbniitSubjects } from "@/data/bbniit/subjects";
 import { cn } from "@/lib/utils";
 
 interface SearchResult {
@@ -12,6 +13,8 @@ interface SearchResult {
   subtitle: string;
   href: string;
 }
+
+const allSubjects = [...subjects, ...bbniitSubjects];
 
 export default function SearchModal() {
   const [open, setOpen] = useState(false);
@@ -29,7 +32,12 @@ export default function SearchModal() {
     const lower = q.toLowerCase();
     const found: SearchResult[] = [];
 
-    for (const subject of subjects) {
+    for (const subject of allSubjects) {
+      const inst = subject.institution || "bbdu";
+      const prefix = inst === "bbniit"
+        ? "/bbniit/btech/cse/cse-stream/first-year/semester-1"
+        : "/bbdu/btech/cse/group-a/first-year/semester-1";
+
       if (
         subject.name.toLowerCase().includes(lower) ||
         subject.code.toLowerCase().includes(lower)
@@ -37,8 +45,8 @@ export default function SearchModal() {
         found.push({
           type: "subject",
           title: subject.name,
-          subtitle: subject.code,
-          href: `/semester-1/${subject.id}`,
+          subtitle: `${subject.code} · ${inst === "bbniit" ? "BBDNIIT" : "BBDU"}`,
+          href: `${prefix}/${subject.id}`,
         });
       }
       for (const unit of subject.units) {
@@ -47,7 +55,7 @@ export default function SearchModal() {
             type: "unit",
             title: unit.title,
             subtitle: `${subject.name} — Unit ${unit.number}`,
-            href: `/semester-1/${subject.id}/${unit.id}`,
+            href: `${prefix}/${subject.id}/${unit.id}`,
           });
         }
         for (const topic of unit.topics) {
@@ -56,7 +64,7 @@ export default function SearchModal() {
               type: "topic",
               title: topic.title,
               subtitle: `${subject.name} — ${unit.title}`,
-              href: `/semester-1/${subject.id}/${unit.id}/${topic.id}`,
+              href: `${prefix}/${subject.id}/${unit.id}/${topic.id}`,
             });
           }
         }

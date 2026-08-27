@@ -4,52 +4,74 @@ import { use } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getBranch } from "@/data/branches";
+import { getInstitution } from "@/data/institutions";
 import { subjects } from "@/data/subjects";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TopicRow from "@/components/TopicCard";
 
-export default function BranchUnitPage({
+export default function UnitPage({
   params,
 }: {
-  params: Promise<{ branch: string; group: string; subject: string; unit: string }>;
+  params: Promise<{
+    institution: string;
+    program: string;
+    branch: string;
+    group: string;
+    year: string;
+    semester: string;
+    subject: string;
+    unit: string;
+  }>;
 }) {
-  const { branch: branchId, group: groupId, subject: subjectId, unit: unitId } = use(params);
-  const branch = getBranch(branchId);
-  const group = branch?.groups.find((g) => g.id === groupId);
+  const {
+    institution: instId,
+    program: progId,
+    branch: branchId,
+    group: groupId,
+    year: yearId,
+    semester: semId,
+    subject: subjectId,
+    unit: unitId,
+  } = use(params);
+  const institution = getInstitution(instId);
   const subject = subjects.find((s) => s.id === subjectId);
   const unit = subject?.units.find((u) => u.id === unitId);
 
-  if (!branch || !group || !subject || !unit) notFound();
+  if (!institution || !subject || !unit) notFound();
 
   const unitIndex = subject.units.findIndex((u) => u.id === unitId);
   const prevUnit = unitIndex > 0 ? subject.units[unitIndex - 1] : null;
-  const nextUnit = unitIndex < subject.units.length - 1 ? subject.units[unitIndex + 1] : null;
+  const nextUnit =
+    unitIndex < subject.units.length - 1 ? subject.units[unitIndex + 1] : null;
+
+  const base = `/${instId}/${progId}/${branchId}/${groupId}/${yearId}/${semId}`;
 
   return (
     <div>
-      <section className="hero-gradient-subtle relative overflow-hidden">
-        <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <Breadcrumbs
             items={[
-              { label: "Home", href: "/select" },
-              { label: subject.name, href: `/btech/${branchId}/${groupId}/semester-1/${subjectId}` },
+              { label: "Home", href: "/" },
+              {
+                label: subject.name,
+                href: `${base}/${subjectId}`,
+              },
               { label: unit.title },
             ]}
           />
 
           <div className="mt-5">
-            <span className="text-xs font-bold uppercase tracking-widest text-white/50">
+            <span className="text-xs font-bold uppercase tracking-widest text-muted">
               Unit {String(unit.number).padStart(2, "0")}
             </span>
 
-            <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+            <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {unit.title}
             </h1>
 
             {unit.description && (
-              <p className="mt-2 max-w-2xl text-sm text-white/60 leading-relaxed">
+              <p className="mt-2 max-w-2xl text-sm text-muted leading-relaxed">
                 {unit.description}
               </p>
             )}
@@ -74,6 +96,7 @@ export default function BranchUnitPage({
               index={i}
               branchId={branchId}
               groupId={groupId}
+              institutionId={instId}
             />
           ))}
         </div>
@@ -81,7 +104,7 @@ export default function BranchUnitPage({
         <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
           {prevUnit ? (
             <Link
-              href={`/btech/${branchId}/${groupId}/semester-1/${subjectId}/${prevUnit.id}`}
+              href={`${base}/${subjectId}/${prevUnit.id}`}
               className="group flex items-center gap-3"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border transition-colors group-hover:border-accent/30 group-hover:bg-accent/5">
@@ -102,7 +125,7 @@ export default function BranchUnitPage({
 
           {nextUnit ? (
             <Link
-              href={`/btech/${branchId}/${groupId}/semester-1/${subjectId}/${nextUnit.id}`}
+              href={`${base}/${subjectId}/${nextUnit.id}`}
               className="group flex items-center gap-3"
             >
               <div className="text-right">

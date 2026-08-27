@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
-import { branches } from "@/data/branches";
-import { getSubjectsForGroup } from "@/lib/branchUtils";
+import { institutions } from "@/data/institutions";
+import { bbduSubjects } from "@/data/subjects";
+import { bbniitSubjects } from "@/data/bbniit/subjects";
 
 const BASE_URL = "https://bbdu.netlify.app";
 
@@ -9,53 +10,64 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE_URL}/select`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/semester-1`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/search`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${BASE_URL}/onboarding`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/progress`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
   ];
 
-  const branchPages: MetadataRoute.Sitemap = [];
+  const dynamicPages: MetadataRoute.Sitemap = [];
 
-  for (const branch of branches) {
-    for (const group of branch.groups) {
-      const groupSubjects = getSubjectsForGroup(branch.id, group.id);
+  for (const institution of institutions) {
+    for (const program of institution.programs) {
+      for (const branch of program.branches) {
+        for (const group of branch.groups) {
+          for (const year of group.years) {
+            for (const semester of year.semesters) {
+              const prefix = `${BASE_URL}/${institution.id}/${program.id}/${branch.id}/${group.id}/${year.id}/${semester.id}`;
+              const source = institution.id === "bbniit" ? bbniitSubjects : bbduSubjects;
+              const subjects = semester.subjects
+                .map((id) => source.find((s) => s.id === id))
+                .filter(Boolean);
 
-      branchPages.push({
-        url: `${BASE_URL}/btech/${branch.id}/${group.id}/semester-1`,
-        lastModified: now,
-        changeFrequency: "weekly",
-        priority: 0.8,
-      });
+              dynamicPages.push({
+                url: prefix,
+                lastModified: now,
+                changeFrequency: "weekly",
+                priority: 0.8,
+              });
 
-      for (const subject of groupSubjects) {
-        branchPages.push({
-          url: `${BASE_URL}/btech/${branch.id}/${group.id}/semester-1/${subject.id}`,
-          lastModified: now,
-          changeFrequency: "weekly",
-          priority: 0.7,
-        });
+              for (const subject of subjects) {
+                if (!subject) continue;
+                dynamicPages.push({
+                  url: `${prefix}/${subject.id}`,
+                  lastModified: now,
+                  changeFrequency: "weekly",
+                  priority: 0.7,
+                });
 
-        for (const unit of subject.units) {
-          branchPages.push({
-            url: `${BASE_URL}/btech/${branch.id}/${group.id}/semester-1/${subject.id}/${unit.id}`,
-            lastModified: now,
-            changeFrequency: "weekly",
-            priority: 0.6,
-          });
+                for (const unit of subject.units) {
+                  dynamicPages.push({
+                    url: `${prefix}/${subject.id}/${unit.id}`,
+                    lastModified: now,
+                    changeFrequency: "weekly",
+                    priority: 0.6,
+                  });
 
-          for (const topic of unit.topics) {
-            branchPages.push({
-              url: `${BASE_URL}/btech/${branch.id}/${group.id}/semester-1/${subject.id}/${unit.id}/${topic.id}`,
-              lastModified: now,
-              changeFrequency: "monthly",
-              priority: 0.5,
-            });
+                  for (const topic of unit.topics) {
+                    dynamicPages.push({
+                      url: `${prefix}/${subject.id}/${unit.id}/${topic.id}`,
+                      lastModified: now,
+                      changeFrequency: "monthly",
+                      priority: 0.5,
+                    });
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
   }
 
-  return [...staticPages, ...branchPages];
+  return [...staticPages, ...dynamicPages];
 }

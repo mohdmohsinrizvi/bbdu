@@ -2,39 +2,62 @@
 
 import Link from "next/link";
 import { ArrowRight, RotateCcw } from "lucide-react";
-import { subjects } from "@/data/subjects";
+import { useAcademic } from "@/lib/AcademicContext";
+import { getSubjects } from "@/lib/branchUtils";
 import { useProgress } from "@/hooks/useProgress";
 import ProgressBar from "@/components/ProgressBar";
 import { getSubjectColor } from "@/lib/constants";
 
 export default function ProgressPage() {
   const { progress, resetProgress } = useProgress();
+  const { profile, isSetup } = useAcademic();
 
-  const allTopics = subjects.flatMap((s) =>
-    s.units.flatMap((u) =>
-      u.topics.map((t) => ({ ...t, subjectId: s.id, subjectName: s.name }))
-    )
+  if (!isSetup || !profile) {
+    return (
+      <div className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6">
+        <h1 className="text-2xl font-extrabold text-foreground">Progress</h1>
+        <p className="mt-2 text-sm text-muted">
+          Set up your study space to track progress.
+        </p>
+        <Link
+          href="/onboarding"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-[13px] font-semibold text-background"
+        >
+          Get started
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    );
+  }
+
+  const semSubjects = getSubjects(
+    profile.institutionId,
+    profile.programId,
+    profile.branchId,
+    profile.groupId,
+    profile.yearId,
+    profile.semesterId,
   );
+
+  const allTopics = semSubjects.flatMap((s) => s.units.flatMap((u) => u.topics));
   const totalTopics = allTopics.length;
   const completedTopics = progress.completedTopics.length;
 
-  const subjectProgress = subjects
+  const prefix = `/${profile.institutionId}/${profile.programId}/${profile.branchId}/${profile.groupId}/${profile.yearId}/${profile.semesterId}`;
+
+  const subjectProgress = semSubjects
     .filter((s) => s.units.length > 0)
     .map((s) => {
       const total = s.units.reduce((a, u) => a + u.topics.length, 0);
       const done = s.units
         .flatMap((u) => u.topics)
         .filter((t) => progress.completedTopics.includes(t.id)).length;
-      const instId = s.id.startsWith("bbniit-") ? "bbniit" : "bbdu";
-      const branchId = "cse";
-      const groupId = instId === "bbniit" ? "cse-stream" : "group-a";
       return {
         subject: s,
         total,
         done,
         percent: total > 0 ? Math.round((done / total) * 100) : 0,
-        href: `/${instId}/btech/${branchId}/${groupId}/semester-1/${s.id}`,
-        institution: instId === "bbniit" ? "BBDNIIT" : "BBDU",
+        href: `${prefix}/${s.id}`,
       };
     })
     .filter((sp) => sp.total > 0);
@@ -46,13 +69,12 @@ export default function ProgressPage() {
   return (
     <div>
       {/* Header */}
-      <section className="hero-gradient-subtle relative overflow-hidden">
-        <div className="grid-bg absolute inset-0 opacity-50" />
-        <div className="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">
+      <section className="bg-surface border-b border-border">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             Your Progress
           </h1>
-          <p className="mt-2 text-sm text-white/60">
+          <p className="mt-2 text-sm text-muted">
             {completedTopics} of {totalTopics} topics completed
           </p>
           <div className="mt-5 max-w-md">
@@ -75,7 +97,7 @@ export default function ProgressPage() {
             </h2>
             <Link
               href={continueItem.href}
-              className="group card-hover block rounded-xl border border-border bg-surface p-5"
+              className="group block rounded-xl border border-border bg-surface p-5 transition-all hover:border-foreground/20 hover:bg-surface-hover"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -101,13 +123,13 @@ export default function ProgressPage() {
             Subject Progress
           </h2>
           <div className="space-y-3">
-            {subjectProgress.map(({ subject, done, total, percent, href, institution }) => {
+            {subjectProgress.map(({ subject, done, total, percent, href }) => {
               const colorClass = getSubjectColor(subject.id);
               return (
                 <Link
                   key={subject.id}
                   href={href}
-                  className={`${colorClass} group card-hover block rounded-xl border border-border bg-surface p-5`}
+                  className={`${colorClass} group block rounded-xl border border-border bg-surface p-5 transition-all hover:border-foreground/20 hover:bg-surface-hover`}
                 >
                   <div className="flex items-start gap-4">
                     <div className="subject-accent-bar min-h-[40px]" />
@@ -123,10 +145,6 @@ export default function ProgressPage() {
 
                       <div className="flex items-center gap-2 text-xs text-muted">
                         <span className="font-medium">{subject.code}</span>
-                        <span className="text-border">&middot;</span>
-                        <span className="rounded-md bg-surface-hover px-1.5 py-0.5 text-[9px] font-bold uppercase">
-                          {institution}
-                        </span>
                         <span className="text-border">&middot;</span>
                         <span className="tabular-nums">
                           {done}/{total} topics

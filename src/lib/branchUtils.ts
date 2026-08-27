@@ -1,52 +1,33 @@
 import { bbduSubjects } from "@/data/subjects";
 import { bbniitSubjects } from "@/data/bbniit/subjects";
-import { getSubjectIdsForGroup } from "@/data/branches";
-import { getSubjectIdsForInstitutionGroup } from "@/data/institutions";
+import { getSubjectIds } from "@/data/institutions";
 import type { Subject } from "@/data/types";
 
-export const subjects: Subject[] = [...bbduSubjects, ...bbniitSubjects];
+export const allSubjects: Subject[] = [...bbduSubjects, ...bbniitSubjects];
 
-export function getSubjectsForGroup(
-  branchId: string,
-  groupId: string
-): Subject[] {
-  const ids = getSubjectIdsForGroup(branchId, groupId);
-  return ids
-    .map((id) => bbduSubjects.find((s) => s.id === id))
-    .filter((s): s is Subject => s !== undefined);
-}
-
-export function getSubjectsForInstitutionGroup(
+export function getSubjects(
   institutionId: string,
+  programId: string,
   branchId: string,
-  groupId: string
+  groupId: string,
+  yearId: string,
+  semesterId: string
 ): Subject[] {
   const source =
     institutionId === "bbniit" ? bbniitSubjects : bbduSubjects;
-  const ids = getSubjectIdsForInstitutionGroup(institutionId, branchId, groupId);
+  const ids = getSubjectIds(
+    institutionId,
+    programId,
+    branchId,
+    groupId,
+    yearId,
+    semesterId
+  );
   return ids
     .map((id) => source.find((s) => s.id === id))
     .filter((s): s is Subject => s !== undefined);
 }
 
-export function getTheorySubjectsForGroup(
-  branchId: string,
-  groupId: string
-): Subject[] {
-  return getSubjectsForGroup(branchId, groupId).filter(
-    (s) => s.type === "theory"
-  );
-}
-
-export function getLabSubjectsForGroup(
-  branchId: string,
-  groupId: string
-): Subject[] {
-  return getSubjectsForGroup(branchId, groupId).filter(
-    (s) => s.type === "lab"
-  );
-}
-
-export function getSubjectsForInstitution(institutionId: string): Subject[] {
-  return institutionId === "bbniit" ? bbniitSubjects : bbduSubjects;
+export function getSubjectById(id: string): Subject | undefined {
+  return allSubjects.find((s) => s.id === id);
 }

@@ -5,10 +5,10 @@ export default function Footer() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
           <div className="max-w-xs">
             <span className="text-sm font-bold text-foreground">
-              BBDU CSE Study Hub
+              BBD Study Hub
             </span>
             <p className="mt-1 text-xs leading-relaxed text-muted">
-              A student-built learning platform for B.Tech CSE.
+              Academic syllabus, curated lectures, and progress tracking for B.Tech students.
             </p>
           </div>
 
@@ -52,7 +52,7 @@ export default function Footer() {
 
         <div className="mt-6 border-t border-border pt-4">
           <p className="text-center text-[11px] text-muted">
-            &copy; 2026 BBDU CSE Study Hub
+            &copy; 2026 BBD Study Hub
           </p>
         </div>
       </div>
