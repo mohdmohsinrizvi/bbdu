@@ -29,7 +29,7 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#1a1635" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f0e0d" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a1635" },
   ],
   width: "device-width",
   initialScale: 1,

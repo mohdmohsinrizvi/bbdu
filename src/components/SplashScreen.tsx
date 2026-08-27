@@ -1,62 +1,179 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { BookOpen } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+
+type SplashPhase = "hidden" | "visible" | "fading" | "done";
 
 export default function SplashScreen() {
-  const [visible, setVisible] = useState(true);
-  const [fadeOut, setFadeOut] = useState(false);
+  const [phase, setPhase] = useState<SplashPhase>("visible");
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    // Hide as soon as the document is interactive
-    const handleReady = () => {
-      // Small delay to ensure paint, then fade out
-      requestAnimationFrame(() => {
-        setFadeOut(true);
-        setTimeout(() => setVisible(false), 300);
-      });
-    };
-
-    if (document.readyState === "complete") {
-      handleReady();
-    } else {
-      window.addEventListener("load", handleReady);
-      return () => window.removeEventListener("load", handleReady);
-    }
+  const dismiss = useCallback(() => {
+    setPhase("fading");
+    setTimeout(() => setPhase("done"), 350);
   }, []);
 
-  if (!visible) return null;
+  // Dismiss when app is ready — no artificial delay
+  useEffect(() => {
+    if (phase !== "visible") return;
+
+    const readyCheck = () => {
+      // Consider ready when document is interactive or complete
+      if (document.readyState === "interactive" || document.readyState === "complete") {
+        // Give one frame for paint, then dismiss
+        requestAnimationFrame(() => requestAnimationFrame(() => dismiss()));
+      }
+    };
+
+    if (document.readyState === "interactive" || document.readyState === "complete") {
+      readyCheck();
+    } else {
+      document.addEventListener("readystatechange", readyCheck);
+      return () => document.removeEventListener("readystatechange", readyCheck);
+    }
+  }, [phase, dismiss]);
+
+  // Safety: dismiss after 4s max to prevent trapping the user
+  useEffect(() => {
+    if (phase !== "visible") return;
+    const timer = setTimeout(dismiss, 4000);
+    return () => clearTimeout(timer);
+  }, [phase, dismiss]);
+
+  if (phase === "done") return null;
 
   return (
     <div
-      aria-hidden="true"
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-hero-start transition-opacity duration-300 ${
-        fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
-      }`}
+      aria-live="polite"
+      aria-busy={phase === "visible"}
+      className={`splash-container ${phase === "fading" ? "splash-fade-out" : ""}`}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#1a1635",
+        transition: "opacity 350ms ease-out",
+        opacity: phase === "fading" ? 0 : 1,
+        pointerEvents: phase === "fading" ? "none" : "auto",
+      }}
     >
-      <div className="flex flex-col items-center gap-4">
-        {/* App icon */}
-        <div className="relative">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent shadow-lg shadow-accent/30">
-            <BookOpen className="h-8 w-8 text-white" />
+      {/* Logo */}
+      <div className="splash-logo" style={{ marginBottom: 24 }}>
+        {error ? (
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.08)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <span style={{ fontSize: 28, fontWeight: 700, color: "#818cf8", letterSpacing: "-0.02em" }}>
+              B
+            </span>
           </div>
-          {/* Subtle pulse ring */}
-          <div className="absolute inset-0 rounded-2xl animate-ping bg-accent/20" style={{ animationDuration: "1.5s" }} />
-        </div>
-
-        {/* App name */}
-        <div className="text-center">
-          <h1 className="text-lg font-extrabold tracking-tight text-white">
-            BBDU CSE
-          </h1>
-          <p className="text-xs font-medium text-white/50">Study Hub</p>
-        </div>
-
-        {/* Minimal loading indicator */}
-        <div className="mt-2 h-0.5 w-16 overflow-hidden rounded-full bg-white/10">
-          <div className="splash-bar h-full rounded-full bg-accent/80" />
-        </div>
+        ) : (
+          <img
+            src="/icons/icon-192x192.png"
+            alt=""
+            width={72}
+            height={72}
+            style={{
+              borderRadius: 16,
+              opacity: imgLoaded ? 1 : 0,
+              transition: "opacity 400ms ease, transform 400ms ease",
+              transform: imgLoaded ? "scale(1)" : "scale(0.92)",
+            }}
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setError(true)}
+          />
+        )}
       </div>
+
+      {/* Brand name */}
+      <div className="splash-brand" style={{ textAlign: "center", marginBottom: 6 }}>
+        <h1
+          style={{
+            fontSize: 17,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            color: "#ffffff",
+            textTransform: "uppercase",
+            lineHeight: 1.2,
+          }}
+        >
+          BBD Study Hub
+        </h1>
+      </div>
+
+      {/* Tagline */}
+      <p
+        className="splash-tagline"
+        style={{
+          fontSize: 12,
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.4)",
+          letterSpacing: "0.02em",
+          marginBottom: 28,
+        }}
+      >
+        Your academic space.
+      </p>
+
+      {/* Loading indicator — minimal dot pulse */}
+      <div
+        className="splash-dots"
+        style={{
+          display: "flex",
+          gap: 5,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span className="splash-dot" style={{ animationDelay: "0ms" }} />
+        <span className="splash-dot" style={{ animationDelay: "200ms" }} />
+        <span className="splash-dot" style={{ animationDelay: "400ms" }} />
+      </div>
+
+      {/* Error state */}
+      {error && (
+        <button
+          onClick={dismiss}
+          style={{
+            position: "absolute",
+            bottom: 60,
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "8px 20px",
+            borderRadius: 8,
+            border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.6)",
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: "pointer",
+            transition: "background 200ms, color 200ms",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+          }}
+        >
+          Continue
+        </button>
+      )}
     </div>
   );
 }

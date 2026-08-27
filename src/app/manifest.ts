@@ -2,17 +2,17 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "BBDU CSE Study Hub",
-    short_name: "BBDU CSE",
+    name: "BBD Study Hub",
+    short_name: "BBD Hub",
     description:
-      "A student-built learning platform for B.Tech CSE students at BBD University. Structured subjects, curated YouTube videos, and progress tracking.",
+      "Academic syllabus, curated lectures, and progress tracking for B.Tech students at BBD institutions.",
     start_url: "/",
     scope: "/",
     id: "/",
     display: "standalone",
     orientation: "portrait-primary",
-    theme_color: "#1e1b4b",
-    background_color: "#1e1b4b",
+    theme_color: "#1a1635",
+    background_color: "#1a1635",
     lang: "en",
     categories: ["education", "productivity"],
     icons: [
@@ -39,14 +39,14 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: "1200x630",
         type: "image/png",
         form_factor: "wide",
-        label: "BBDU CSE Study Hub - Desktop",
+        label: "BBD Study Hub - Desktop",
       },
       {
         src: "/icons/icon-512x512.png",
         sizes: "512x512",
         type: "image/png",
         form_factor: "narrow",
-        label: "BBDU CSE Study Hub - Mobile",
+        label: "BBD Study Hub - Mobile",
       },
     ],
     shortcuts: [
