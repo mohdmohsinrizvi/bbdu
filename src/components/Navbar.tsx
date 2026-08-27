@@ -39,7 +39,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-xl">
+    <nav aria-label="Main navigation" className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background transition-transform group-hover:scale-105">

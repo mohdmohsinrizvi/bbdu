@@ -110,6 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </>
       )}
       <head>
+        <meta name="google-site-verification" content="Dm5TtxPOJBgwKp7ruXRuMcM6EfchJLv55K8IWAZDBoM" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
