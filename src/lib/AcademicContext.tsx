@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 
 interface AcademicProfile {
   institutionId: string;
@@ -38,7 +38,14 @@ function saveProfile(profile: AcademicProfile) {
 }
 
 export function AcademicProvider({ children }: { children: React.ReactNode }) {
-  const [profile, setProfileState] = useState<AcademicProfile | null>(() => loadProfile());
+  const [profile, setProfileState] = useState<AcademicProfile | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProfileState(loadProfile());
+    setLoaded(true);
+  }, []);
 
   const setProfile = useCallback((p: AcademicProfile) => {
     setProfileState(p);
@@ -56,6 +63,8 @@ export function AcademicProvider({ children }: { children: React.ReactNode }) {
     if (!profile) return "";
     return `/${profile.institutionId}/${profile.programId}/${profile.branchId}/${profile.groupId}/${profile.yearId}/${profile.semesterId}`;
   }, [profile]);
+
+  if (!loaded) return null;
 
   return (
     <AcademicContext.Provider

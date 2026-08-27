@@ -2,6 +2,9 @@
   command = "npm run build"
   publish = ".next"
 
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [[headers]]
   for = "/sw.js"
   [headers.values]
@@ -35,28 +38,3 @@
   for = "/icons/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
-
-[[headers]]
-  for = "/offline.html"
-  [headers.values]
-    Cache-Control = "no-cache"
-
-[[redirects]]
-  from = "/semester-1"
-  to = "/select"
-  status = 301
-
-[[redirects]]
-  from = "/semester-1/:subject"
-  to = "/btech/cse/group-a/semester-1/:subject"
-  status = 301
-
-[[redirects]]
-  from = "/semester-1/:subject/:unit"
-  to = "/btech/cse/group-a/semester-1/:subject/:unit"
-  status = 301
-
-[[redirects]]
-  from = "/semester-1/:subject/:unit/:topic"
-  to = "/btech/cse/group-a/semester-1/:subject/:unit/:topic"
-  status = 301

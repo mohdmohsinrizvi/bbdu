@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 interface ProgressData {
   completedTopics: string[];
@@ -10,15 +10,15 @@ interface ProgressData {
 
 const STORAGE_KEY = "bbdu-study-hub-progress";
 
-function getInitialProgress(): ProgressData {
-  if (typeof window === "undefined") {
-    return { completedTopics: [], completedVideos: [], startedSubjects: [] };
-  }
+const EMPTY: ProgressData = { completedTopics: [], completedVideos: [], startedSubjects: [] };
+
+function loadProgress(): ProgressData {
+  if (typeof window === "undefined") return EMPTY;
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     if (data) return JSON.parse(data);
   } catch {}
-  return { completedTopics: [], completedVideos: [], startedSubjects: [] };
+  return EMPTY;
 }
 
 function saveProgress(data: ProgressData) {
@@ -27,7 +27,14 @@ function saveProgress(data: ProgressData) {
 }
 
 export function useProgress() {
-  const [progress, setProgress] = useState<ProgressData>(getInitialProgress);
+  const [progress, setProgress] = useState<ProgressData>(EMPTY);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProgress(loadProgress());
+    setLoaded(true);
+  }, []);
 
   const toggleTopic = useCallback((topicId: string) => {
     setProgress((prev) => {
@@ -63,13 +70,13 @@ export function useProgress() {
   );
 
   const resetProgress = useCallback(() => {
-    const empty: ProgressData = { completedTopics: [], completedVideos: [], startedSubjects: [] };
-    saveProgress(empty);
-    setProgress(empty);
+    saveProgress(EMPTY);
+    setProgress(EMPTY);
   }, []);
 
   return {
     progress,
+    loaded,
     toggleTopic,
     markSubjectStarted,
     isTopicCompleted,

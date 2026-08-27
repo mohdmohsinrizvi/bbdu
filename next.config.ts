@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
         destination: "/bbdu/btech/cse/group-a/first-year/semester-1/:subject/:unit/:topic",
         permanent: true,
       },
-      // Old /btech/ routes → new structure with year
+      // Old bare /btech/ routes → /bbdu/btech/ with year
       {
         source: "/btech/:branch/:group/:semester",
         destination: "/bbdu/btech/:branch/:group/first-year/:semester",
@@ -42,28 +42,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/btech/:branch/:group/:semester/:subject/:unit/:topic",
-        destination: "/bbdu/btech/:branch/:group/first-year/:semester/:subject/:unit/:topic",
-        permanent: true,
-      },
-      // Old /[institution]/btech/ routes → new structure with year
-      {
-        source: "/:institution/btech/:branch/:group/:semester",
-        destination: "/:institution/btech/:branch/:group/first-year/:semester",
-        permanent: true,
-      },
-      {
-        source: "/:institution/btech/:branch/:group/:semester/:subject",
-        destination: "/:institution/btech/:branch/:group/first-year/:semester/:subject",
-        permanent: true,
-      },
-      {
-        source: "/:institution/btech/:branch/:group/:semester/:subject/:unit",
-        destination: "/:institution/btech/:branch/:group/first-year/:semester/:subject/:unit",
-        permanent: true,
-      },
-      {
-        source: "/:institution/btech/:branch/:group/:semester/:subject/:unit/:topic",
-        destination: "/:institution/btech/:branch/:group/first-year/:semester/:subject/:unit/:topic",
+        destination: "/bbdu/btech/:branch/:group/first-year/semester/:subject/:unit/:topic",
         permanent: true,
       },
     ];
