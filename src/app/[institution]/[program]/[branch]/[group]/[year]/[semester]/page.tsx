@@ -88,8 +88,11 @@ export default function SemesterPage({
                   key={subject.id}
                   subject={subject}
                   index={i}
+                  programId={progId}
                   branchId={branchId}
                   groupId={groupId}
+                  yearId={yearId}
+                  semesterId={semId}
                   institutionId={instId}
                 />
               ))}
@@ -108,8 +111,11 @@ export default function SemesterPage({
                   key={subject.id}
                   subject={subject}
                   index={i}
+                  programId={progId}
                   branchId={branchId}
                   groupId={groupId}
+                  yearId={yearId}
+                  semesterId={semId}
                   institutionId={instId}
                 />
               ))}

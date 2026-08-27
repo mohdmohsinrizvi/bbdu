@@ -160,8 +160,11 @@ export default function SubjectPage({
                   unit={unit}
                   subjectId={subjectId}
                   completedTopics={progress.completedTopics}
+                  programId={progId}
                   branchId={branchId}
                   groupId={groupId}
+                  yearId={yearId}
+                  semesterId={semId}
                   institutionId={instId}
                 />
               ))}

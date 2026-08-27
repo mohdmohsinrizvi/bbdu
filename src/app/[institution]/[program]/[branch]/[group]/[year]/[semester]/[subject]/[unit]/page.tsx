@@ -94,8 +94,11 @@ export default function UnitPage({
               subjectId={subjectId}
               unitId={unitId}
               index={i}
+              programId={progId}
               branchId={branchId}
               groupId={groupId}
+              yearId={yearId}
+              semesterId={semId}
               institutionId={instId}
             />
           ))}
