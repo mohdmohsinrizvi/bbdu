@@ -8,8 +8,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { label: "Select Branch", href: "/select" },
-  { label: "Semester 1", href: "/semester-1" },
+  { label: "Select", href: "/select" },
   { label: "Search", href: "/search" },
   { label: "Progress", href: "/progress" },
 ];
@@ -47,7 +46,7 @@ export default function Navbar() {
           </div>
           <div className="hidden sm:block">
             <span className="text-sm font-bold tracking-tight text-foreground">
-              BBDU
+              BBD
             </span>
             <span className="text-sm font-medium text-muted ml-1">
               Study Hub

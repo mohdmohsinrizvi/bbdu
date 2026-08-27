@@ -13,6 +13,7 @@ interface TopicCardProps {
   index: number;
   branchId?: string;
   groupId?: string;
+  institutionId?: string;
 }
 
 export default function TopicRow({
@@ -21,11 +22,14 @@ export default function TopicRow({
   unitId,
   branchId,
   groupId,
+  institutionId,
 }: TopicCardProps) {
   const { isTopicCompleted, toggleTopic } = useProgress();
   const completed = isTopicCompleted(topic.id);
 
-  const href = branchId && groupId
+  const href = institutionId && branchId && groupId
+    ? `/${institutionId}/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${topic.id}`
+    : branchId && groupId
     ? `/btech/${branchId}/${groupId}/semester-1/${subjectId}/${unitId}/${topic.id}`
     : `/semester-1/${subjectId}/${unitId}/${topic.id}`;
 

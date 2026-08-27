@@ -31,6 +31,12 @@ export default function SearchBar() {
     const found: SearchResult[] = [];
 
     for (const subject of subjects) {
+      const instId = subject.id.startsWith("bbniit-") ? "bbniit" : "bbdu";
+      const branchId = "cse";
+      const groupId =
+        instId === "bbniit" ? "cse-stream" : "group-a";
+      const base = `/${instId}/btech/${branchId}/${groupId}/semester-1`;
+
       if (
         subject.name.toLowerCase().includes(lower) ||
         subject.code.toLowerCase().includes(lower)
@@ -38,8 +44,8 @@ export default function SearchBar() {
         found.push({
           type: "subject",
           title: subject.name,
-          subtitle: subject.code,
-          href: `/semester-1/${subject.id}`,
+          subtitle: `${subject.code} · ${instId === "bbniit" ? "BBDNIIT" : "BBDU"}`,
+          href: `${base}/${subject.id}`,
         });
       }
       for (const unit of subject.units) {
@@ -48,7 +54,7 @@ export default function SearchBar() {
             type: "unit",
             title: unit.title,
             subtitle: `${subject.name} — Unit ${unit.number}`,
-            href: `/semester-1/${subject.id}/${unit.id}`,
+            href: `${base}/${subject.id}/${unit.id}`,
           });
         }
         for (const topic of unit.topics) {
@@ -57,7 +63,7 @@ export default function SearchBar() {
               type: "topic",
               title: topic.title,
               subtitle: `${subject.name} — ${unit.title}`,
-              href: `/semester-1/${subject.id}/${unit.id}/${topic.id}`,
+              href: `${base}/${subject.id}/${unit.id}/${topic.id}`,
             });
           }
         }

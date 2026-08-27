@@ -17,6 +17,7 @@ export default function ProgressPage() {
   );
   const totalTopics = allTopics.length;
   const completedTopics = progress.completedTopics.length;
+
   const subjectProgress = subjects
     .filter((s) => s.units.length > 0)
     .map((s) => {
@@ -24,11 +25,16 @@ export default function ProgressPage() {
       const done = s.units
         .flatMap((u) => u.topics)
         .filter((t) => progress.completedTopics.includes(t.id)).length;
+      const instId = s.id.startsWith("bbniit-") ? "bbniit" : "bbdu";
+      const branchId = "cse";
+      const groupId = instId === "bbniit" ? "cse-stream" : "group-a";
       return {
         subject: s,
         total,
         done,
         percent: total > 0 ? Math.round((done / total) * 100) : 0,
+        href: `/${instId}/btech/${branchId}/${groupId}/semester-1/${s.id}`,
+        institution: instId === "bbniit" ? "BBDNIIT" : "BBDU",
       };
     })
     .filter((sp) => sp.total > 0);
@@ -68,7 +74,7 @@ export default function ProgressPage() {
               Continue
             </h2>
             <Link
-              href={`/semester-1/${continueItem.subject.id}`}
+              href={continueItem.href}
               className="group card-hover block rounded-xl border border-border bg-surface p-5"
             >
               <div className="flex items-center justify-between">
@@ -95,12 +101,12 @@ export default function ProgressPage() {
             Subject Progress
           </h2>
           <div className="space-y-3">
-            {subjectProgress.map(({ subject, done, total, percent }) => {
+            {subjectProgress.map(({ subject, done, total, percent, href, institution }) => {
               const colorClass = getSubjectColor(subject.id);
               return (
                 <Link
                   key={subject.id}
-                  href={`/semester-1/${subject.id}`}
+                  href={href}
                   className={`${colorClass} group card-hover block rounded-xl border border-border bg-surface p-5`}
                 >
                   <div className="flex items-start gap-4">
@@ -115,8 +121,12 @@ export default function ProgressPage() {
                         </span>
                       </div>
 
-                      <div className="mt-1 flex items-center gap-2 text-xs text-muted">
+                      <div className="flex items-center gap-2 text-xs text-muted">
                         <span className="font-medium">{subject.code}</span>
+                        <span className="text-border">&middot;</span>
+                        <span className="rounded-md bg-surface-hover px-1.5 py-0.5 text-[9px] font-bold uppercase">
+                          {institution}
+                        </span>
                         <span className="text-border">&middot;</span>
                         <span className="tabular-nums">
                           {done}/{total} topics

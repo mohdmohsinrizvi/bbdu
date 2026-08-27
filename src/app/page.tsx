@@ -23,6 +23,12 @@ import { getSubjectColor } from "@/lib/constants";
 import InstallSection from "@/components/InstallSection";
 
 const theorySubjects = subjects.filter((s) => s.type === "theory");
+const bbduTheory = subjects.filter(
+  (s) => s.type === "theory" && (!s.institution || s.institution === "bbdu")
+);
+const bbniitTheory = subjects.filter(
+  (s) => s.type === "theory" && s.institution === "bbniit"
+);
 
 const comingSoonFeatures = [
   {
@@ -52,20 +58,19 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
+    const inst = localStorage.getItem("bbdu-institution");
     const branch = localStorage.getItem("bbdu-branch");
     const group = localStorage.getItem("bbdu-group");
-    if (branch && group) {
-      router.push(`/btech/${branch}/${group}/semester-1`);
+    if (inst && branch && group) {
+      router.push(`/${inst}/btech/${branch}/${group}/semester-1`);
+    } else if (branch && group) {
+      router.push(`/bbdu/btech/${branch}/${group}/semester-1`);
     }
   }, [router]);
 
   const allTopics = subjects.flatMap((s) => s.units.flatMap((u) => u.topics));
   const totalTopics = allTopics.length;
   const completedTopics = progress.completedTopics.length;
-  const totalUnits = subjects.reduce(
-    (acc, s) => acc + s.units.reduce((a, u) => a + u.topics.length, 0),
-    0
-  );
 
   const continueSubject = progress.startedSubjects.length > 0
     ? subjects.find(
@@ -121,7 +126,7 @@ export default function HomePage() {
               </h1>
 
               <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60">
-                Explore {subjects.length} subjects, {totalUnits} topics, and curated
+                Explore {subjects.length} subjects across 2 institutions, with curated
                 video lessons &mdash; all mapped to your B.Tech CSE curriculum.
               </p>
 
@@ -197,7 +202,7 @@ export default function HomePage() {
                 </div>
 
                 <Link
-                  href="/semester-1"
+                  href="/select"
                   className="mt-3 flex items-center justify-center gap-1 rounded-lg bg-white/5 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                 >
                   View all {subjects.length} subjects
@@ -249,7 +254,7 @@ export default function HomePage() {
                 Continue Learning
               </h2>
               <Link
-                href={`/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
+                href={`/bbdu/btech/cse/group-a/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
                 className="text-xs font-semibold text-accent hover:text-accent-hover transition-colors"
               >
                 Skip to topic
@@ -257,7 +262,7 @@ export default function HomePage() {
             </div>
 
             <Link
-              href={`/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
+              href={`/bbdu/btech/cse/group-a/semester-1/${continueSubject.id}/${continueUnit?.id}/${continueTopic.id}`}
               onClick={() => trackContinueLearning(continueSubject.name, continueUnit?.title || "", continueTopic.title)}
               className="group card-hover block rounded-xl border border-border bg-surface p-5 sm:p-6"
             >
@@ -302,78 +307,152 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-6">
             <div>
               <h2 className="text-2xl font-extrabold tracking-tight text-foreground">
-                Semester 1
+                All Subjects
               </h2>
               <p className="mt-1 text-sm text-muted">
-                Group 1 / Group A &middot; {subjects.length} subjects
+                BBDU &amp; BBDNIIT &middot; {subjects.length} subjects
               </p>
             </div>
             <Link
-              href="/semester-1"
+              href="/select"
               className="hidden items-center gap-1 text-xs font-semibold text-accent hover:text-accent-hover sm:flex"
             >
-              View all
+              Choose your path
               <ChevronRight className="h-3 w-3" />
             </Link>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {theorySubjects.map((subject, i) => {
-              const totalTopicsCount = subject.units.reduce(
-                (acc, u) => acc + u.topics.length,
-                0
-              );
-              const subjectCompleted = subject.units
-                .flatMap((u) => u.topics)
-                .filter((t) => progress.completedTopics.includes(t.id))
-                .length;
-              const pct =
-                totalTopicsCount > 0
-                  ? Math.round((subjectCompleted / totalTopicsCount) * 100)
-                  : 0;
-              const colorClass = getSubjectColor(subject.id);
+          {/* BBDU Subjects */}
+          {bbduTheory.length > 0 && (
+            <div className="mb-8">
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
+                BBD University
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {bbduTheory.slice(0, 6).map((subject, i) => {
+                  const totalTopicsCount = subject.units.reduce(
+                    (acc, u) => acc + u.topics.length,
+                    0
+                  );
+                  const subjectCompleted = subject.units
+                    .flatMap((u) => u.topics)
+                    .filter((t) => progress.completedTopics.includes(t.id))
+                    .length;
+                  const pct =
+                    totalTopicsCount > 0
+                      ? Math.round((subjectCompleted / totalTopicsCount) * 100)
+                      : 0;
+                  const colorClass = getSubjectColor(subject.id);
 
-              return (
-                <Link
-                  key={subject.id}
-                  href={`/semester-1/${subject.id}`}
-                  className={`group ${colorClass} card-hover relative overflow-hidden rounded-xl border border-border bg-surface p-5 transition-all`}
-                >
-                  <div className="subject-accent-bar absolute left-0 top-0 h-full" />
-                  <div className="pl-3">
-                    <div className="flex items-start justify-between">
-                      <span className="editorial-number text-[2.5rem]">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
-                        {subject.credits} Credits
-                      </span>
-                    </div>
+                  return (
+                    <Link
+                      key={subject.id}
+                      href={`/bbdu/btech/cse/group-a/semester-1/${subject.id}`}
+                      className={`group ${colorClass} card-hover relative overflow-hidden rounded-xl border border-border bg-surface p-5 transition-all`}
+                    >
+                      <div className="subject-accent-bar absolute left-0 top-0 h-full" />
+                      <div className="pl-3">
+                        <div className="flex items-start justify-between">
+                          <span className="editorial-number text-[2.5rem]">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                            {subject.credits} Credits
+                          </span>
+                        </div>
 
-                    <h3 className="mt-2 text-base font-bold text-foreground group-hover:text-accent transition-colors">
-                      {subject.name}
-                    </h3>
+                        <h3 className="mt-2 text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                          {subject.name}
+                        </h3>
 
-                    <p className="mt-1 text-xs text-muted">
-                      {subject.code} &middot; {subject.units.length} Units
-                    </p>
+                        <p className="mt-1 text-xs text-muted">
+                          {subject.code} &middot; {subject.units.length} Units
+                        </p>
 
-                    <div className="mt-3 flex items-center gap-3">
-                      <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-border">
-                        <div
-                          className="h-full rounded-full bg-accent animate-progress transition-all duration-700"
-                          style={{ width: `${pct}%` }}
-                        />
+                        <div className="mt-3 flex items-center gap-3">
+                          <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-border">
+                            <div
+                              className="h-full rounded-full bg-accent animate-progress transition-all duration-700"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-bold tabular-nums text-muted">
+                            {subjectCompleted}/{totalTopicsCount}
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-xs font-bold tabular-nums text-muted">
-                        {subjectCompleted}/{totalTopicsCount}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* BBDNIIT Subjects */}
+          {bbniitTheory.length > 0 && (
+            <div>
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
+                BBDNIIT
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {bbniitTheory.slice(0, 6).map((subject, i) => {
+                  const totalTopicsCount = subject.units.reduce(
+                    (acc, u) => acc + u.topics.length,
+                    0
+                  );
+                  const subjectCompleted = subject.units
+                    .flatMap((u) => u.topics)
+                    .filter((t) => progress.completedTopics.includes(t.id))
+                    .length;
+                  const pct =
+                    totalTopicsCount > 0
+                      ? Math.round((subjectCompleted / totalTopicsCount) * 100)
+                      : 0;
+                  const colorClass = getSubjectColor(subject.id);
+
+                  return (
+                    <Link
+                      key={subject.id}
+                      href={`/bbniit/btech/cse/cse-stream/semester-1/${subject.id}`}
+                      className={`group ${colorClass} card-hover relative overflow-hidden rounded-xl border border-border bg-surface p-5 transition-all`}
+                    >
+                      <div className="subject-accent-bar absolute left-0 top-0 h-full" />
+                      <div className="pl-3">
+                        <div className="flex items-start justify-between">
+                          <span className="editorial-number text-[2.5rem]">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+                            {subject.credits} Credits
+                          </span>
+                        </div>
+
+                        <h3 className="mt-2 text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                          {subject.name}
+                        </h3>
+
+                        <p className="mt-1 text-xs text-muted">
+                          {subject.code} &middot; {subject.units.length} Units
+                        </p>
+
+                        <div className="mt-3 flex items-center gap-3">
+                          <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-border">
+                            <div
+                              className="h-full rounded-full bg-accent animate-progress transition-all duration-700"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-bold tabular-nums text-muted">
+                            {subjectCompleted}/{totalTopicsCount}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

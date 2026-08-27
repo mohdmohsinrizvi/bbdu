@@ -1,6 +1,6 @@
 import { Subject } from "./types";
 
-export const subjects: Subject[] = [
+export const bbduSubjects: Subject[] = [
   {
     id: "calculus",
     code: "RBS5103",
@@ -1544,3 +1544,7 @@ export const subjects: Subject[] = [
     units: [],
   },
 ];
+
+import { bbniitSubjects } from "./bbniit/subjects";
+
+export const subjects: Subject[] = [...bbduSubjects, ...bbniitSubjects];

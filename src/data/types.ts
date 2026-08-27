@@ -12,6 +12,7 @@ export interface Subject {
   objectives: string[];
   outcomes: string[];
   units: Unit[];
+  institution?: string;
 }
 
 export interface Unit {
