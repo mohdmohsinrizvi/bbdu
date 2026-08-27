@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -10,6 +10,12 @@ import PageTransition from "@/components/PageTransition";
 import ScrollToTop from "@/components/ScrollToTop";
 import SearchModal from "@/components/SearchModal";
 import FeedbackButton from "@/components/FeedbackButton";
+import { PWAProvider } from "@/components/PWAProvider";
+import OfflineIndicator from "@/components/OfflineIndicator";
+import InstallBanner from "@/components/InstallBanner";
+import UpdateBanner from "@/components/UpdateBanner";
+import IOSInstallPrompt from "@/components/IOSInstallPrompt";
+import SplashScreen from "@/components/SplashScreen";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -18,6 +24,16 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#1e1b4b" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d0c1f" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -40,20 +56,34 @@ export const metadata: Metadata = {
     "electronics",
   ],
   authors: [{ name: "Mohd Mohsin" }],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "BBDU CSE",
+  },
   openGraph: {
     title: "BBDU CSE Study Hub",
     description:
       "B.Tech CSE Semester 1 — structured subjects, curated YouTube videos, and progress tracking.",
-    url: "https://bbdu-study-hub.vercel.app",
+    url: "https://bbdu.netlify.app",
     siteName: "BBDU CSE Study Hub",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://bbdu.netlify.app/icons/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "BBDU CSE Study Hub",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "BBDU CSE Study Hub",
     description:
       "B.Tech CSE Semester 1 — structured subjects, curated YouTube videos, and progress tracking.",
+    images: ["https://bbdu.netlify.app/icons/og-image.png"],
   },
   robots: {
     index: true,
@@ -82,6 +112,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </>
       )}
       <head>
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(()=>{try{const t=localStorage.getItem('bbdu-theme');const d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){}})()`,
@@ -89,18 +122,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${jakarta.variable} min-h-screen bg-background text-foreground font-sans antialiased`}>
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1 pb-20 md:pb-0">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
-          <MobileNav />
-          <ScrollToTop />
-          <FeedbackButton />
-          <SearchModal />
-        </div>
-        <Analytics />
+        <PWAProvider>
+          <SplashScreen />
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1 pb-20 md:pb-0">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+            <MobileNav />
+            <ScrollToTop />
+            <FeedbackButton />
+            <SearchModal />
+          </div>
+          <OfflineIndicator />
+          <InstallBanner />
+          <UpdateBanner />
+          <IOSInstallPrompt />
+          <Analytics />
+        </PWAProvider>
       </body>
     </html>
   );

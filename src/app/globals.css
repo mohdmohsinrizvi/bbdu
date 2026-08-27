@@ -316,3 +316,58 @@ body {
   position: absolute;
   animation: confetti-fall 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ---- Slide up ---- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ---- Safe area for standalone mode ---- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Standalone mode: add top padding for iOS status bar */
+@media all and (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* ---- Splash screen loading bar ---- */
+@keyframes splash-bar {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+
+.splash-bar {
+  animation: splash-bar 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ---- Phone mockup subtle float ---- */
+@keyframes phone-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.phone-mockup {
+  animation: phone-float 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-mockup {
+    animation: none;
+  }
+  .splash-bar {
+    animation: none;
+    width: 100%;
+  }
+}

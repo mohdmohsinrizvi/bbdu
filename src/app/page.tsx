@@ -20,6 +20,7 @@ import { subjects } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import { trackContinueLearning } from "@/lib/analytics";
 import { getSubjectColor } from "@/lib/constants";
+import InstallSection from "@/components/InstallSection";
 
 const theorySubjects = subjects.filter((s) => s.type === "theory");
 
@@ -496,6 +497,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Install App */}
+      <InstallSection />
 
       {/* Coming Soon */}
       <section className="relative overflow-hidden border-t border-border bg-surface">

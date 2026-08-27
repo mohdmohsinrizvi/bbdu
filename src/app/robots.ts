@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: "/admin",
       },
     ],
-    sitemap: "https://bbdu-study-hub.vercel.app/sitemap.xml",
+    sitemap: "https://bbdu.netlify.app/sitemap.xml",
   };
 }

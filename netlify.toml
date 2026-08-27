@@ -1,0 +1,62 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/offline.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[redirects]]
+  from = "/semester-1"
+  to = "/select"
+  status = 301
+
+[[redirects]]
+  from = "/semester-1/:subject"
+  to = "/btech/cse/group-a/semester-1/:subject"
+  status = 301
+
+[[redirects]]
+  from = "/semester-1/:subject/:unit"
+  to = "/btech/cse/group-a/semester-1/:subject/:unit"
+  status = 301
+
+[[redirects]]
+  from = "/semester-1/:subject/:unit/:topic"
+  to = "/btech/cse/group-a/semester-1/:subject/:unit/:topic"
+  status = 301

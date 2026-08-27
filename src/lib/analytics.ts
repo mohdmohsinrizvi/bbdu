@@ -42,3 +42,19 @@ export function trackSearch(searchTerm: string) {
 export function trackContinueLearning(subjectName: string, unitName: string, topicName: string) {
   gtag("event", "continue_learning", { subject_name: subjectName, unit_name: unitName, topic_name: topicName });
 }
+
+export function trackInstallSectionView() {
+  gtag("event", "pwa_install_section_view");
+}
+
+export function trackInstallButtonClick() {
+  gtag("event", "pwa_install_button_click");
+}
+
+export function trackInstallSuccess() {
+  gtag("event", "pwa_install_success");
+}
+
+export function trackInstallDismissed() {
+  gtag("event", "pwa_install_dismissed");
+}

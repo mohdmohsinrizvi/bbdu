@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { branches } from "@/data/branches";
 import { getSubjectsForGroup } from "@/lib/branchUtils";
 
-const BASE_URL = "https://bbdu-study-hub.vercel.app";
+const BASE_URL = "https://bbdu.netlify.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
