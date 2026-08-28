@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, BookOpen, ArrowLeft } from "lucide-react";
+import { ArrowRight, BookOpen, ArrowLeft, Search } from "lucide-react";
 import {
   institutions,
   type AcademicInstitution,
@@ -12,6 +12,7 @@ import {
   type AcademicYear,
   type AcademicSemester,
 } from "@/data/institutions";
+import { cseSpecializations, type Specialization } from "@/data/bbniit/specializations";
 import { useAcademic } from "@/lib/AcademicContext";
 import { cn } from "@/lib/utils";
 import {
@@ -28,7 +29,7 @@ type Step = "institution" | "program" | "branch" | "group" | "year" | "semester"
 const stepLabels: Record<Step, string> = {
   institution: "Select your college",
   program: "What are you studying?",
-  branch: "Choose your branch",
+  branch: "Choose your specialization",
   group: "Choose your group",
   year: "Which year are you in?",
   semester: "Choose semester",
@@ -45,12 +46,14 @@ export default function OnboardingPage() {
   const [group, setGroup] = useState<AcademicGroup | null>(null);
   const [year, setYear] = useState<AcademicYear | null>(null);
   const [transitioning, setTransitioning] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const goNext = (next: Step) => {
     setTransitioning(true);
     setTimeout(() => {
       setStep(next);
       setTransitioning(false);
+      setSearchQuery("");
     }, 200);
   };
 
@@ -63,6 +66,7 @@ export default function OnboardingPage() {
       else if (step === "year") { setStep("group"); setYear(null); }
       else if (step === "semester") { setStep("year"); }
       setTransitioning(false);
+      setSearchQuery("");
     }, 200);
   };
 
@@ -178,6 +182,65 @@ export default function OnboardingPage() {
     institution: 1, program: 2, branch: 3, group: 4, year: 5, semester: 6,
   };
 
+  // Group specializations by category for BBDNIIT branch selection
+  const branchOptions = useMemo(() => {
+    if (!program || institution?.id !== "bbniit") {
+      return (program?.branches ?? []).map((b) => ({
+        id: b.id,
+        label: b.name,
+        sub: b.shortName,
+        onClick: () => handleBranch(b),
+      }));
+    }
+
+    // For BBDNIIT: group by specialization category with search
+    const filtered = cseSpecializations.filter((spec) => {
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        spec.name.toLowerCase().includes(q) ||
+        spec.shortName.toLowerCase().includes(q)
+      );
+    });
+
+    const csGroup = filtered.filter((s) => s.group === "Computer Science");
+    const scGroup = filtered.filter((s) => s.group === "Specialized Computing");
+
+    const result: { id: string; label: string; sub: string; onClick: () => void; isGroup?: boolean }[] = [];
+
+    if (csGroup.length > 0) {
+      result.push({ id: "group-cs", label: "Computer Science", sub: "", onClick: () => {}, isGroup: true });
+      csGroup.forEach((spec) => {
+        const branch = program.branches.find((b) => b.id === spec.id);
+        if (branch) {
+          result.push({
+            id: spec.id,
+            label: spec.name,
+            sub: spec.shortName,
+            onClick: () => handleBranch(branch),
+          });
+        }
+      });
+    }
+
+    if (scGroup.length > 0) {
+      result.push({ id: "group-sc", label: "Specialized Computing", sub: "", onClick: () => {}, isGroup: true });
+      scGroup.forEach((spec) => {
+        const branch = program.branches.find((b) => b.id === spec.id);
+        if (branch) {
+          result.push({
+            id: spec.id,
+            label: spec.name,
+            sub: spec.shortName,
+            onClick: () => handleBranch(branch),
+          });
+        }
+      });
+    }
+
+    return result;
+  }, [program, institution, searchQuery]);
+
   const options = (() => {
     switch (step) {
       case "institution":
@@ -191,16 +254,11 @@ export default function OnboardingPage() {
         return (institution?.programs ?? []).map((p) => ({
           id: p.id,
           label: p.name,
-          sub: `${p.branches.length} branch${p.branches.length > 1 ? "es" : ""}`,
+          sub: `${p.branches.length} specialization${p.branches.length > 1 ? "s" : ""}`,
           onClick: () => handleProgram(p),
         }));
       case "branch":
-        return (program?.branches ?? []).map((b) => ({
-          id: b.id,
-          label: b.name,
-          sub: b.shortName,
-          onClick: () => handleBranch(b),
-        }));
+        return branchOptions;
       case "group":
         return (branch?.groups ?? []).map((g) => ({
           id: g.id,
@@ -224,6 +282,8 @@ export default function OnboardingPage() {
         }));
     }
   })();
+
+  const showSearch = step === "branch" && institution?.id === "bbniit";
 
   return (
     <div className="min-h-screen bg-background">
@@ -309,29 +369,64 @@ export default function OnboardingPage() {
               </h2>
             </div>
 
+            {/* Search bar for branch/specialization selection */}
+            {showSearch && (
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Search specializations..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
+                </div>
+              </div>
+            )}
+
             <div
               className={cn(
                 "space-y-3 transition-opacity duration-200",
                 transitioning ? "opacity-0" : "opacity-100"
               )}
             >
-              {options.map((opt) => (
-                <button
-                  key={opt.id}
-                  onClick={opt.onClick}
-                  className="group flex w-full items-center justify-between rounded-xl border border-border bg-surface px-5 py-4 text-left transition-all hover:border-foreground/20 hover:bg-surface-hover"
-                >
-                  <div>
-                    <p className="text-[15px] font-semibold text-foreground">
-                      {opt.label}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted">{opt.sub}</p>
-                  </div>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted transition-all group-hover:border-foreground/20 group-hover:text-foreground">
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </div>
-                </button>
-              ))}
+              {options.map((opt) => {
+                // Group headers for specialization categories
+                if ("isGroup" in opt && opt.isGroup) {
+                  return (
+                    <div key={opt.id} className="pt-4 pb-1">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted">
+                        {opt.label}
+                      </p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={opt.onClick}
+                    className="group flex w-full items-center justify-between rounded-xl border border-border bg-surface px-5 py-4 text-left transition-all hover:border-foreground/20 hover:bg-surface-hover"
+                  >
+                    <div>
+                      <p className="text-[15px] font-semibold text-foreground">
+                        {opt.label}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted">{opt.sub}</p>
+                    </div>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted transition-all group-hover:border-foreground/20 group-hover:text-foreground">
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                  </button>
+                );
+              })}
+
+              {showSearch && options.filter((o) => !("isGroup" in o && o.isGroup)).length === 0 && (
+                <div className="py-8 text-center">
+                  <p className="text-sm text-muted">No specializations found for &ldquo;{searchQuery}&rdquo;</p>
+                </div>
+              )}
             </div>
 
             {step === "semester" && institution && program && branch && group && year && (
@@ -342,9 +437,7 @@ export default function OnboardingPage() {
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-foreground">
                   <span className="font-semibold">{institution.shortName}</span>
                   <span className="text-muted">&middot;</span>
-                  <span>{program.name} {branch.shortName}</span>
-                  <span className="text-muted">&middot;</span>
-                  <span>{group.name}</span>
+                  <span>{branch.name}</span>
                   <span className="text-muted">&middot;</span>
                   <span>{year.label}</span>
                 </div>

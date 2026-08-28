@@ -1,3 +1,5 @@
+import { cseSpecializations, getSemester1SubjectIds, getSemester2SubjectIds } from "./bbniit/specializations";
+
 export interface AcademicInstitution {
   id: string;
   name: string;
@@ -171,54 +173,38 @@ export const institutions: AcademicInstitution[] = [
         id: "btech",
         name: "B.Tech",
         shortName: "B.Tech",
-        branches: [
-          {
-            id: "cse",
-            name: "Computer Science & Engineering",
-            shortName: "CSE",
-            groups: [
-              {
-                id: "cse-stream",
-                name: "CSE Stream",
-                years: [
-                  {
-                    id: "first-year",
-                    label: "1st Year",
-                    number: 1,
-                    semesters: [
-                      {
-                        id: "semester-1",
-                        label: "Semester 1",
-                        number: 1,
-                        subjects: [
-                          "bbniit-quantum-physics",
-                          "bbniit-applied-chemistry",
-                          "bbniit-calculus-linear-algebra",
-                          "bbniit-electrical-engineering",
-                          "bbniit-electronics-engineering",
-                          "bbniit-programming-languages",
-                          "bbniit-indian-knowledge-system",
-                          "bbniit-professional-communication",
-                          "bbniit-intro-ai-prompt-engineering",
-                          "bbniit-mechanical-engineering",
-                        ],
-                      },
-                      {
-                        id: "semester-2",
-                        label: "Semester 2",
-                        number: 2,
-                        subjects: [
-                          "bbniit-numerical-methods",
-                          "bbniit-data-structures",
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
+        branches: cseSpecializations.map((spec) => ({
+          id: spec.id,
+          name: spec.name,
+          shortName: spec.shortName,
+          groups: [
+            {
+              id: `${spec.id}-stream`,
+              name: spec.name,
+              years: [
+                {
+                  id: "first-year",
+                  label: "1st Year",
+                  number: 1,
+                  semesters: [
+                    {
+                      id: "semester-1",
+                      label: "Semester 1",
+                      number: 1,
+                      subjects: getSemester1SubjectIds(),
+                    },
+                    {
+                      id: "semester-2",
+                      label: "Semester 2",
+                      number: 2,
+                      subjects: getSemester2SubjectIds(),
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        })),
       },
     ],
   },
