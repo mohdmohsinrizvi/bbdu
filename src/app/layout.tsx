@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -24,12 +24,19 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
+
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#1a1635" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1635" },
+    { media: "(prefers-color-scheme: light)", color: "#120E0B" },
+    { media: "(prefers-color-scheme: dark)", color: "#120E0B" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -120,7 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={`${jakarta.variable} min-h-screen bg-background text-foreground font-sans antialiased`}>
+      <body className={`${jakarta.variable} ${cormorant.variable} min-h-screen bg-background text-foreground font-sans antialiased`}>
         <PWAProvider>
           <AcademicProvider>
             <SplashScreen />

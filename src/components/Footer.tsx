@@ -7,20 +7,20 @@ export default function Footer() {
         <div className="grid gap-8 sm:grid-cols-3">
           {/* Brand */}
           <div>
-            <span className="text-sm font-bold text-foreground">
+            <span className="font-display text-[15px] font-semibold text-foreground">
               BBD Study Hub
             </span>
-            <p className="mt-1 text-xs leading-relaxed text-muted">
+            <p className="mt-1.5 text-xs leading-relaxed text-muted">
               Student-built academic learning platform for B.Tech students at BBD institutions.
             </p>
           </div>
 
           {/* Quick Links */}
           <nav aria-label="Footer navigation">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
               Quick Links
             </span>
-            <ul className="mt-2 space-y-1.5">
+            <ul className="mt-2.5 space-y-2">
               <li>
                 <Link href="/" className="text-xs text-muted transition-colors hover:text-foreground">
                   Home
@@ -51,24 +51,24 @@ export default function Footer() {
 
           {/* Credits */}
           <div className="sm:text-right">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
               Created &amp; Designed by
             </span>
-            <p className="mt-0.5">
+            <p className="mt-1">
               <a
                 href="https://mohsin-universe.netlify.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[15px] font-semibold text-foreground transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="text-[14px] font-medium text-foreground transition-colors duration-150 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Mohd Mohsin
               </a>
             </p>
             <div className="mt-3">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
                 Campus Outreach
               </span>
-              <p className="mt-0.5 text-[14px] font-medium text-foreground">
+              <p className="mt-0.5 text-[13px] font-medium text-foreground">
                 <a
                   href="https://www.instagram.com/aquibb22_"
                   target="_blank"

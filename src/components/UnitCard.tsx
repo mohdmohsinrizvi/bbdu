@@ -46,16 +46,16 @@ export default function UnitAccordion({
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-4 py-4 text-left transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6 group"
       >
-        <span className="w-10 flex-shrink-0 text-right text-2xl font-extrabold tabular-nums text-border-strong group-hover:text-accent transition-colors">
+        <span className="w-10 flex-shrink-0 text-right text-2xl font-display font-medium tabular-nums text-border-strong group-hover:text-accent transition-colors">
           {String(unit.number).padStart(2, "0")}
         </span>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <h3 className="truncate text-[15px] font-bold text-foreground">
+            <h3 className="truncate text-[15px] font-semibold text-foreground">
               {unit.title}
             </h3>
-            <span className="flex-shrink-0 text-xs font-bold tabular-nums text-muted">
+            <span className="flex-shrink-0 text-xs font-semibold tabular-nums text-muted">
               {completedCount}/{unit.topics.length}
             </span>
           </div>
@@ -66,10 +66,10 @@ export default function UnitAccordion({
             </p>
           )}
 
-          <div className="mt-2 h-1.5 w-full max-w-md overflow-hidden rounded-full bg-border">
+          <div className="mt-2 h-px w-full max-w-md overflow-hidden bg-border">
             <div
               className={cn(
-                "h-full rounded-full transition-all duration-700 ease-out",
+                "h-full transition-all duration-700 ease-out",
                 progress === 100 ? "bg-success" : "bg-accent"
               )}
               style={{ width: `${progress}%` }}
@@ -105,7 +105,7 @@ export default function UnitAccordion({
 
           <Link
             href={unitHref}
-            className="ml-12 mt-2 flex items-center gap-1.5 py-2 text-xs font-bold text-accent hover:text-accent-hover transition-colors"
+            className="ml-12 mt-2 flex items-center gap-1.5 py-2 text-xs font-semibold text-accent hover:text-accent-hover transition-colors"
           >
             View full unit
             <ChevronRight className="h-3 w-3" />

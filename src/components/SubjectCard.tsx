@@ -47,20 +47,20 @@ export default function SubjectCard({
     >
       <div className="subject-accent-bar absolute left-0 top-0 h-full" />
 
-      <span className="w-10 flex-shrink-0 text-right text-2xl font-extrabold tabular-nums text-border-strong">
+      <span className="w-10 flex-shrink-0 text-right text-2xl font-display font-medium tabular-nums text-border-strong">
         {String(index + 1).padStart(2, "0")}
       </span>
 
       <div className="min-w-0 flex-1 pl-2">
         <div className="flex items-baseline gap-2">
-          <span className="truncate text-[15px] font-bold text-foreground group-hover:text-accent transition-colors">
+          <span className="truncate text-[15px] font-semibold text-foreground group-hover:text-accent transition-colors">
             {subject.name}
           </span>
         </div>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted">
           <span className="font-medium">{subject.code}</span>
           {subject.type === "lab" && (
-            <span className="rounded-md border border-border px-1.5 py-px text-[10px] font-bold uppercase text-muted">
+            <span className="rounded-md border border-border px-1.5 py-px text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
               Lab
             </span>
           )}
@@ -83,10 +83,10 @@ export default function SubjectCard({
         </div>
 
         {totalTopics > 0 && (
-          <div className="mt-2 h-1 max-w-[200px] overflow-hidden rounded-full bg-border">
+          <div className="mt-2 h-px max-w-[200px] overflow-hidden bg-border">
             <div
               className={cn(
-                "h-full rounded-full transition-all duration-500",
+                "h-full transition-all duration-500",
                 pct === 100 ? "bg-success" : "bg-accent"
               )}
               style={{ width: `${pct}%` }}

@@ -37,7 +37,7 @@ function FeaturedContributor({ c, index }: { c: typeof contributors[0]; index: n
         className="mb-6 transition-all duration-700 ease-out"
         style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(8px)" }}
       >
-        <span className="text-[11px] font-bold tracking-[0.2em] text-border-strong">
+        <span className="text-[11px] font-semibold tracking-[0.2em] text-border-strong">
           {pad} / <span className="text-muted">CONTRIBUTORS</span>
         </span>
       </div>
@@ -49,12 +49,12 @@ function FeaturedContributor({ c, index }: { c: typeof contributors[0]; index: n
           className="flex-shrink-0 transition-all duration-700 ease-out delay-100"
           style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(12px)" }}
         >
-          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-surface-hover lg:h-24 lg:w-24">
-            <span className="text-2xl font-extrabold tracking-tight text-muted lg:text-3xl">
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-lg bg-surface-hover lg:h-24 lg:w-24">
+            <span className="font-display text-2xl font-semibold tracking-tight text-muted lg:text-3xl">
               {c.initials}
             </span>
             {/* Subtle corner accent */}
-            <div className="absolute right-0 top-0 h-2 w-2 rounded-bl-lg bg-accent/40" />
+            <div className="absolute right-0 top-0 h-1.5 w-1.5 rounded-bl bg-accent/40" />
           </div>
         </div>
 
@@ -63,7 +63,7 @@ function FeaturedContributor({ c, index }: { c: typeof contributors[0]; index: n
           {/* Name with reveal animation */}
           <div className="overflow-hidden">
             <h2
-              className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl"
+              className="font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl lg:text-5xl"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? "none" : "translateY(20px)",
@@ -89,7 +89,7 @@ function FeaturedContributor({ c, index }: { c: typeof contributors[0]; index: n
             className="mt-5 space-y-1.5 transition-all duration-700 ease-out"
             style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(10px)", transitionDelay: "0.4s" }}
           >
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-sm font-medium text-foreground">
               {c.program}
             </p>
             <p className="text-sm text-muted">
@@ -108,7 +108,7 @@ function FeaturedContributor({ c, index }: { c: typeof contributors[0]; index: n
             className="mt-6 inline-flex items-center gap-2 transition-all duration-700 ease-out"
             style={{ opacity: inView ? 1 : 0, transitionDelay: "0.6s" }}
           >
-            <div className="h-1.5 w-1.5 rounded-full bg-accent/60" />
+            <div className="h-1 w-1 rounded-full bg-accent/60" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted">
               Community Contributor
             </span>
@@ -140,7 +140,7 @@ export default function ContributorsPageClient() {
       <header ref={heroRef} className="mx-auto max-w-4xl px-4 pt-12 pb-4 sm:px-6 sm:pt-20 sm:pb-6">
         {/* Eyebrow */}
         <p
-          className="text-[10px] font-bold uppercase tracking-[0.25em] text-muted transition-all duration-700 ease-out"
+          className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent transition-all duration-700 ease-out"
           style={{ opacity: heroInView ? 1 : 0, transform: heroInView ? "none" : "translateY(6px)" }}
         >
           The Community Behind the Hub
@@ -148,7 +148,7 @@ export default function ContributorsPageClient() {
 
         {/* Title */}
         <h1
-          className="mt-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl transition-all duration-700 ease-out"
+          className="mt-5 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl lg:text-5xl transition-all duration-700 ease-out"
           style={{
             opacity: heroInView ? 1 : 0,
             transform: heroInView ? "none" : "translateY(12px)",
@@ -179,9 +179,7 @@ export default function ContributorsPageClient() {
 
       {/* Contributors list */}
       <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
-        <p
-          className="mb-10 text-[10px] font-bold uppercase tracking-[0.2em] text-muted"
-        >
+        <p className="mb-10 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted">
           Special Thanks
         </p>
 
@@ -195,10 +193,10 @@ export default function ContributorsPageClient() {
       {/* CTA */}
       <section className="mx-auto max-w-4xl px-4 pb-16 sm:px-6 sm:pb-24">
         <div className="border-t border-border pt-10">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted">
             Get Involved
           </p>
-          <h2 className="mt-3 text-xl font-bold text-foreground sm:text-2xl">
+          <h2 className="mt-3 font-display text-xl font-medium text-foreground sm:text-2xl">
             Want to contribute?
           </h2>
           <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
@@ -208,7 +206,7 @@ export default function ContributorsPageClient() {
             href="https://www.instagram.com/mohsin.rizvii"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-5 py-2.5 text-[13px] font-semibold text-foreground transition-all duration-200 hover:border-foreground/20 hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="mt-6 inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-[13px] font-medium text-foreground transition-all duration-200 hover:border-accent/30 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             Want to Contribute?
             <svg

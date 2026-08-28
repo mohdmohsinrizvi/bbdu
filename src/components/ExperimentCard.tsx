@@ -13,12 +13,12 @@ export default function ExperimentRow({
   return (
     <div className="border-b border-border py-4 px-5 last:border-b-0">
       <div className="flex items-start gap-4">
-        <span className="w-10 flex-shrink-0 text-right text-2xl font-extrabold tabular-nums text-border-strong">
+        <span className="w-10 flex-shrink-0 text-right text-2xl font-display font-medium tabular-nums text-border-strong">
           {String(experiment.number).padStart(2, "0")}
         </span>
 
         <div className="min-w-0 flex-1">
-          <h4 className="text-[15px] font-bold text-foreground">
+          <h4 className="text-[15px] font-semibold text-foreground">
             {experiment.title}
           </h4>
           <p className="mt-0.5 text-xs text-muted leading-relaxed">
@@ -30,7 +30,7 @@ export default function ExperimentRow({
               {experiment.mappedCO.map((co) => (
                 <span
                   key={co}
-                  className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-bold text-muted"
+                  className="rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] uppercase text-muted"
                 >
                   {co}
                 </span>

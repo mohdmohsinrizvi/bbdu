@@ -125,7 +125,7 @@ export default function SearchModal() {
         onClick={() => { setOpen(false); setQuery(""); setResults([]); }}
       />
       <div className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2 px-4 animate-scale-in">
-        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl shadow-black/20">
+        <div className="overflow-hidden rounded-md border border-border bg-background shadow-2xl shadow-black/20">
           <div className="flex items-center gap-3 border-b border-border px-4 py-3">
             <Search className="h-4 w-4 text-muted" />
             <input
@@ -140,7 +140,7 @@ export default function SearchModal() {
               placeholder="Search subjects, units, topics..."
               className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
             />
-            <kbd className="hidden rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-bold text-muted sm:inline">
+            <kbd className="hidden rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-semibold text-muted sm:inline">
               ESC
             </kbd>
           </div>
@@ -159,13 +159,13 @@ export default function SearchModal() {
                       setResults([]);
                     }}
                     className={cn(
-                      "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
+                      "flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors",
                       index === activeIndex
                         ? "bg-accent/8 text-accent"
                         : "text-foreground hover:bg-surface-hover"
                     )}
                   >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-surface-hover">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-accent/10">
                       <Icon className="h-4 w-4 text-muted" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -176,7 +176,7 @@ export default function SearchModal() {
                         {result.subtitle}
                       </p>
                     </div>
-                    <span className="rounded-md bg-surface-hover px-1.5 py-0.5 text-[10px] font-bold uppercase text-muted">
+                    <span className="rounded-md bg-surface-hover px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
                       {result.type}
                     </span>
                   </button>

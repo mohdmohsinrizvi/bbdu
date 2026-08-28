@@ -56,7 +56,7 @@ export default function SplashScreen() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#1a1635",
+        background: "#120E0B",
         transition: "opacity 350ms ease-out",
         opacity: phase === "fading" ? 0 : 1,
         pointerEvents: phase === "fading" ? "none" : "auto",
@@ -76,7 +76,7 @@ export default function SplashScreen() {
               justifyContent: "center",
             }}
           >
-            <span style={{ fontSize: 28, fontWeight: 700, color: "#818cf8", letterSpacing: "-0.02em" }}>
+            <span style={{ fontSize: 28, fontWeight: 700, color: "#B08A5A", letterSpacing: "-0.02em" }}>
               B
             </span>
           </div>
@@ -105,7 +105,7 @@ export default function SplashScreen() {
             fontSize: 17,
             fontWeight: 700,
             letterSpacing: "0.08em",
-            color: "#ffffff",
+            color: "#F3EDE3",
             textTransform: "uppercase",
             lineHeight: 1.2,
           }}
@@ -120,7 +120,7 @@ export default function SplashScreen() {
         style={{
           fontSize: 12,
           fontWeight: 400,
-          color: "rgba(255,255,255,0.4)",
+          color: "rgba(243,237,227,0.4)",
           letterSpacing: "0.02em",
           marginBottom: 28,
         }}
@@ -154,21 +154,21 @@ export default function SplashScreen() {
             transform: "translateX(-50%)",
             padding: "8px 20px",
             borderRadius: 8,
-            border: "1px solid rgba(255,255,255,0.15)",
-            background: "rgba(255,255,255,0.06)",
-            color: "rgba(255,255,255,0.6)",
+            border: "1px solid rgba(58,45,36,0.5)",
+              background: "rgba(26,20,16,0.6)",
+              color: "rgba(243,237,227,0.6)",
             fontSize: 13,
             fontWeight: 500,
             cursor: "pointer",
             transition: "background 200ms, color 200ms",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.8)";
+            e.currentTarget.style.background = "rgba(26,20,16,0.8)";
+            e.currentTarget.style.color = "rgba(243,237,227,0.8)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.06)";
-            e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+            e.currentTarget.style.background = "rgba(26,20,16,0.6)";
+            e.currentTarget.style.color = "rgba(243,237,227,0.6)";
           }}
         >
           Continue

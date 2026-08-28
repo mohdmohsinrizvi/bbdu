@@ -132,7 +132,7 @@ export default function SearchBar() {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Search subjects, units, topics..."
-          className="w-full rounded-xl border border-border bg-surface py-3 pl-11 pr-10 text-[14px] text-foreground outline-none transition-all focus:border-accent/40 focus:shadow-lg focus:shadow-accent/5"
+          className="w-full rounded-md border border-border bg-surface py-3 pl-11 pr-10 text-[14px] text-foreground outline-none transition-all focus:border-accent/40 focus:shadow-lg focus:shadow-accent/5"
         />
         {query && (
           <button
@@ -149,7 +149,7 @@ export default function SearchBar() {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full z-50 mt-2 w-full overflow-hidden rounded-xl border border-border bg-surface shadow-xl shadow-black/5">
+        <div className="absolute top-full z-50 mt-2 w-full overflow-hidden rounded-md border border-border bg-background shadow-xl shadow-black/5">
           {results.map((result, index) => (
             <Link
               key={result.href}
@@ -166,7 +166,7 @@ export default function SearchBar() {
               <div className="flex items-center gap-2.5">
                 <span
                   className={cn(
-                    "rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase",
+                    "rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em]",
                     typeColors[result.type]
                   )}
                 >
@@ -185,8 +185,8 @@ export default function SearchBar() {
       )}
 
       {open && query && results.length === 0 && (
-        <div className="absolute top-full z-50 mt-2 w-full rounded-xl border border-border bg-surface p-6 text-center shadow-xl shadow-black/5">
-          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-surface-hover">
+        <div className="absolute top-full z-50 mt-2 w-full rounded-md border border-border bg-background p-6 text-center shadow-xl shadow-black/5">
+          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-md bg-accent/10">
             <Search className="h-5 w-5 text-muted" />
           </div>
           <p className="text-sm font-medium text-muted">

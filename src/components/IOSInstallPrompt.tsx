@@ -16,16 +16,16 @@ export default function IOSInstallPrompt() {
       onClick={dismissIOSInstructions}
     >
       <div
-        className="w-full max-w-md animate-slide-up rounded-2xl bg-surface p-6 shadow-xl"
+        className="w-full max-w-md animate-slide-up rounded-md bg-surface p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-bold text-foreground">
+          <h3 className="text-base font-semibold text-foreground">
             Install BBDU CSE
           </h3>
           <button
             onClick={dismissIOSInstructions}
-            className="rounded-lg p-1.5 text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+            className="rounded-md p-1.5 text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
@@ -37,8 +37,8 @@ export default function IOSInstallPrompt() {
         </p>
 
         <div className="space-y-3">
-          <div className="flex items-center gap-3 rounded-xl bg-tinted p-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+          <div className="flex items-center gap-3 rounded-md bg-tinted p-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/10">
               <Share className="h-5 w-5 text-accent" />
             </div>
             <div>
@@ -51,8 +51,8 @@ export default function IOSInstallPrompt() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 rounded-xl bg-tinted p-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-sm font-bold text-accent">
+          <div className="flex items-center gap-3 rounded-md bg-tinted p-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/10 text-sm font-semibold text-accent">
               2
             </div>
             <div>
@@ -68,7 +68,7 @@ export default function IOSInstallPrompt() {
 
         <button
           onClick={dismissIOSInstructions}
-          className="mt-5 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+          className="mt-5 w-full rounded-md bg-accent py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
         >
           Got it
         </button>

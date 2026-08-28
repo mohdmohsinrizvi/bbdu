@@ -15,7 +15,7 @@ export default function VideoCard({ video, onSelect, isActive }: VideoCardProps)
     <button
       onClick={() => onSelect(video)}
       className={cn(
-        "flex w-full items-start gap-3.5 py-3 text-left transition-all -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-lg",
+        "flex w-full items-start gap-3.5 py-3 text-left transition-all -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-md",
         isActive
           ? "bg-accent/8 border border-accent/20"
           : "hover:bg-surface-hover/50 border border-transparent"
@@ -24,10 +24,10 @@ export default function VideoCard({ video, onSelect, isActive }: VideoCardProps)
       <div
         className={cn(
           "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg mt-0.5 transition-colors",
-          isActive ? "bg-accent text-white" : "bg-foreground/5 text-foreground/60"
+          isActive ? "bg-accent/10 text-accent" : "bg-foreground/5 text-foreground/60"
         )}
       >
-        <Play className={cn("h-3.5 w-3.5", isActive && "ml-0.5 fill-white")} />
+        <Play className={cn("h-3.5 w-3.5", isActive && "ml-0.5 fill-accent")} />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -48,14 +48,14 @@ export default function VideoCard({ video, onSelect, isActive }: VideoCardProps)
         <p className="mt-0.5 text-xs text-muted">{video.channel}</p>
 
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="rounded-md bg-surface-hover px-1.5 py-px text-[10px] font-bold text-muted">
+          <span className="rounded-md bg-surface-hover px-1.5 py-px text-[10px] font-semibold tracking-[0.2em] uppercase text-muted">
             {video.language}
           </span>
-          <span className="rounded-md bg-surface-hover px-1.5 py-px text-[10px] font-bold text-muted">
+          <span className="rounded-md bg-surface-hover px-1.5 py-px text-[10px] font-semibold tracking-[0.2em] uppercase text-muted">
             {video.level}
           </span>
           {video.duration && (
-            <span className="rounded-md bg-surface-hover px-1.5 py-px text-[10px] font-bold text-muted tabular-nums">
+            <span className="rounded-md bg-surface-hover px-1.5 py-px text-[10px] font-semibold text-muted tabular-nums">
               {video.duration}
             </span>
           )}

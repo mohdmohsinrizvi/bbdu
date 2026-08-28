@@ -30,7 +30,7 @@ export default function ProgressBar({
             <span className="text-xs font-semibold text-muted">{label}</span>
           )}
           {showPercentage && (
-            <span className="text-sm font-extrabold tabular-nums text-foreground">
+            <span className="text-sm font-semibold tabular-nums text-foreground">
               {percentage}%
             </span>
           )}
@@ -38,15 +38,15 @@ export default function ProgressBar({
       )}
       <div
         className={cn(
-          "w-full overflow-hidden rounded-full bg-border",
-          size === "sm" && "h-1",
-          size === "md" && "h-2",
-          size === "lg" && "h-3"
+          "w-full overflow-hidden bg-border",
+          size === "sm" && "h-px",
+          size === "md" && "h-1",
+          size === "lg" && "h-1.5"
         )}
       >
         <div
           className={cn(
-            "h-full rounded-full transition-all duration-700 ease-out animate-progress",
+            "h-full transition-all duration-700 ease-out animate-progress",
             barColor === "success" ? "bg-success" : "bg-accent"
           )}
           style={{ width: `${percentage}%` }}
