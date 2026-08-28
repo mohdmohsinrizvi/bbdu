@@ -41,6 +41,11 @@ export default function Footer() {
                   Search
                 </Link>
               </li>
+              <li>
+                <Link href="/contributors" className="text-xs text-muted transition-colors hover:text-foreground">
+                  Contributors
+                </Link>
+              </li>
             </ul>
           </nav>
 

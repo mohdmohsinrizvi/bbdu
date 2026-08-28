@@ -10,7 +10,6 @@ import { useProgress } from "@/hooks/useProgress";
 import { trackContinueLearning } from "@/lib/analytics";
 import { getSubjectColor } from "@/lib/constants";
 import InstallSection from "@/components/InstallSection";
-import ContributorsSection from "@/components/ContributorsSection";
 
 function HomeContent() {
   const { profile, isSetup } = useAcademic();
@@ -108,8 +107,6 @@ function LandingView() {
       </section>
 
       <InstallSection />
-
-      <ContributorsSection />
 
       <section className="border-t border-border py-6">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -354,8 +351,6 @@ function StudyHubView({
       </section>
 
       <InstallSection />
-
-      <ContributorsSection />
 
       <section className="border-t border-border py-6">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
