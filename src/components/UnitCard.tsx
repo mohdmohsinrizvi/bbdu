@@ -44,6 +44,7 @@ export default function UnitAccordion({
     <div className="border-b border-border">
       <button
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
         className="flex w-full items-center gap-4 py-4 text-left transition-colors hover:bg-surface-hover/50 -mx-4 px-4 sm:-mx-6 sm:px-6 group"
       >
         <span className="w-10 flex-shrink-0 text-right text-2xl font-display font-medium tabular-nums text-border-strong group-hover:text-accent transition-colors">

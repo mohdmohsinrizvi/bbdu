@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Play, ExternalLink, Maximize2 } from "lucide-react";
+import { Play, ExternalLink } from "lucide-react";
 
 interface VideoPlayerProps {
   youtubeId: string;
@@ -87,6 +87,7 @@ export default function VideoPlayer({
 
             <button
               onClick={() => setLoaded(true)}
+              aria-label="Play video"
               className="absolute inset-0 flex items-center justify-center group"
             >
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-surface shadow-xl transition-all group-hover:scale-110">
@@ -97,9 +98,6 @@ export default function VideoPlayer({
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
               <div className="rounded-md bg-black/50 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
                 {channel}
-              </div>
-              <div className="rounded-md bg-black/50 p-1.5 backdrop-blur-sm">
-                <Maximize2 className="h-3.5 w-3.5 text-white" />
               </div>
             </div>
           </div>

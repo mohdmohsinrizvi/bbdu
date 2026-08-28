@@ -362,7 +362,7 @@ export const videos: Video[] = [
     recommended: false,
   },
   {
-    id: "cal-maxima-and-mini-1",
+    id: "cal-maxima-and-mini-2",
     topicId: "maxima-and-minima-of-two-variables",
     subjectId: "calculus",
     youtubeId: "S0_qX4VJhMQ",

@@ -131,6 +131,8 @@ export default function SplashScreen() {
       {/* Loading indicator — minimal dot pulse */}
       <div
         className="splash-dots"
+        aria-label="Loading"
+        role="status"
         style={{
           display: "flex",
           gap: 5,

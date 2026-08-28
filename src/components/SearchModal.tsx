@@ -22,6 +22,7 @@ export default function SearchModal() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   const search = useCallback((q: string) => {
@@ -92,7 +93,11 @@ export default function SearchModal() {
 
   useEffect(() => {
     if (open) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
       setTimeout(() => inputRef.current?.focus(), 50);
+    } else if (previousFocusRef.current) {
+      previousFocusRef.current.focus();
+      previousFocusRef.current = null;
     }
   }, [open]);
 
@@ -124,7 +129,7 @@ export default function SearchModal() {
         className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fade-in"
         onClick={() => { setOpen(false); setQuery(""); setResults([]); }}
       />
-      <div className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2 px-4 animate-scale-in">
+      <div className="fixed left-1/2 top-[15%] z-50 w-full max-w-lg -translate-x-1/2 px-4 animate-scale-in" role="dialog" aria-modal="true" aria-label="Search subjects and topics">
         <div className="overflow-hidden rounded-md border border-border bg-background shadow-2xl shadow-black/20">
           <div className="flex items-center gap-3 border-b border-border px-4 py-3">
             <Search className="h-4 w-4 text-muted" />

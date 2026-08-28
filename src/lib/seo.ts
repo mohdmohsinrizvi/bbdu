@@ -67,7 +67,7 @@ export function buildVideoObjectStructuredData(video: {
     name: video.title,
     description: video.description || video.title,
     thumbnailUrl: `https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`,
-    uploadDate: "2024-01-01",
+    uploadDate: new Date().toISOString().split("T")[0],
     embedUrl: `https://www.youtube.com/embed/${video.youtubeId}`,
     contentUrl: `https://www.youtube.com/watch?v=${video.youtubeId}`,
     publisher: {
@@ -300,13 +300,6 @@ export function buildSemesterBreadcrumbs(
   const grp = getGroup(institutionId, programId, branchId, groupId);
   const yr = getYear(institutionId, programId, branchId, groupId, yearId);
   const sem = getSemester(institutionId, programId, branchId, groupId, yearId, semesterId);
-
-  const items = [{ name: "Home", url: "/" }];
-  if (inst) items.push({ name: inst.shortName, url: `/${institutionId}/${programId}/${branchId}/${groupId}/${yearId}/${semesterId}` });
-  if (br) items[items.length - 1].name = br.shortName;
-  if (grp) items.push({ name: grp.name, url: "#" });
-  if (yr) items.push({ name: yr.label, url: "#" });
-  if (sem) items.push({ name: sem.label, url: "#" });
 
   // Simplified: Home > Branch > Semester
   return [

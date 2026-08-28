@@ -10,6 +10,8 @@ import { useProgress } from "@/hooks/useProgress";
 import { trackContinueLearning } from "@/lib/analytics";
 import { getSubjectColor } from "@/lib/constants";
 import InstallSection from "@/components/InstallSection";
+import { bbduSubjects } from "@/data/subjects";
+import { bbniitSubjects } from "@/data/bbniit/subjects";
 
 function HomeContent() {
   const { profile, isSetup } = useAcademic();
@@ -72,7 +74,7 @@ function LandingView() {
                   </h3>
                   <p className="mt-1 text-xs text-muted">BBDU</p>
                   <p className="mt-3 text-sm text-muted leading-relaxed max-w-md">
-                    University curriculum — B.Tech CSE first year with 11 subjects across theory and labs.
+                    University curriculum — B.Tech CSE first year with {bbduSubjects.length} subjects across theory and labs.
                   </p>
                 </div>
                 <span className="text-lg text-border-strong transition-all group-hover:text-accent group-hover:translate-x-1 mt-1">
@@ -92,7 +94,7 @@ function LandingView() {
                   </h3>
                   <p className="mt-1 text-xs text-muted">AKTU Curriculum</p>
                   <p className="mt-3 text-sm text-muted leading-relaxed max-w-md">
-                    AKTU syllabus — B.Tech CSE first year with 12 subjects following the latest AKTU structure.
+                    AKTU syllabus — B.Tech CSE first year with {bbniitSubjects.length} subjects following the latest AKTU structure.
                   </p>
                 </div>
                 <span className="text-lg text-border-strong transition-all group-hover:text-accent group-hover:translate-x-1 mt-1">

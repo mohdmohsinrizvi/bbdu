@@ -27,7 +27,20 @@ function loadProfile(): AcademicProfile | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (
+        parsed &&
+        typeof parsed.institutionId === "string" &&
+        typeof parsed.programId === "string" &&
+        typeof parsed.branchId === "string" &&
+        typeof parsed.groupId === "string" &&
+        typeof parsed.yearId === "string" &&
+        typeof parsed.semesterId === "string"
+      ) {
+        return parsed;
+      }
+    }
   } catch {}
   return null;
 }

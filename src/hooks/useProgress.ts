@@ -16,7 +16,16 @@ function loadProgress(): ProgressData {
   if (typeof window === "undefined") return EMPTY;
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (
+        parsed &&
+        Array.isArray(parsed.completedTopics) &&
+        Array.isArray(parsed.startedSubjects)
+      ) {
+        return parsed;
+      }
+    }
   } catch {}
   return EMPTY;
 }

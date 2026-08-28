@@ -21,31 +21,29 @@
 }
 
 /* ========================================
-   DARK MODE — PRIMARY IDENTITY
-   Deep espresso + warm ivory + antique bronze
+   LIGHT MODE — WARM CREAM / PAPER (default)
    ======================================== */
 
 :root {
-  /* Dark as default */
-  --background: #120E0B;
-  --foreground: #F3EDE3;
-  --primary: #F3EDE3;
-  --muted: #887B6D;
-  --surface: #1A1410;
-  --surface-hover: #211914;
-  --surface-raised: #291F18;
-  --border-color: #3A2D24;
-  --border-strong: #4D3D31;
-  --accent: #B08A5A;
-  --accent-hover: #D0AA72;
-  --success: #7BA36A;
-  --destructive: #C4625A;
-  --tinted: #1A1410;
-  --tinted-border: #3A2D24;
+  --background: #F2ECE3;
+  --foreground: #211914;
+  --primary: #211914;
+  --muted: #8A7A6A;
+  --surface: #E9E0D5;
+  --surface-hover: #DED4C8;
+  --surface-raised: #E9E0D5;
+  --border-color: #D4C9BC;
+  --border-strong: #B8A99A;
+  --accent: #8A633C;
+  --accent-hover: #6E4F30;
+  --success: #4A7A3A;
+  --destructive: #A83A30;
+  --tinted: #E9E0D5;
+  --tinted-border: #D4C9BC;
 }
 
 /* ========================================
-   LIGHT MODE — WARM CREAM / PAPER
+   DARK MODE — DEEP ESPRESSO + WARM IVORY
    ======================================== */
 
 .dark {

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   async redirects() {
     return [
       // Legacy shortcuts → onboarding
@@ -42,7 +43,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/btech/:branch/:group/:semester/:subject/:unit/:topic",
-        destination: "/bbdu/btech/:branch/:group/first-year/semester/:subject/:unit/:topic",
+        destination: "/bbdu/btech/:branch/:group/first-year/:semester/:subject/:unit/:topic",
         permanent: true,
       },
     ];
