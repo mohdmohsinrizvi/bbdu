@@ -56,7 +56,7 @@ export default function SplashScreen() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#120E0B",
+        background: "#FFFFFF",
         transition: "opacity 350ms ease-out",
         opacity: phase === "fading" ? 0 : 1,
         pointerEvents: phase === "fading" ? "none" : "auto",
@@ -70,13 +70,13 @@ export default function SplashScreen() {
               width: 72,
               height: 72,
               borderRadius: 16,
-              background: "rgba(255,255,255,0.08)",
+              background: "#F3F3F3",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <span style={{ fontSize: 28, fontWeight: 700, color: "#B08A5A", letterSpacing: "-0.02em" }}>
+            <span style={{ fontSize: 28, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
               B
             </span>
           </div>
@@ -105,7 +105,7 @@ export default function SplashScreen() {
             fontSize: 17,
             fontWeight: 700,
             letterSpacing: "0.08em",
-            color: "#F3EDE3",
+            color: "#1a1a1a",
             textTransform: "uppercase",
             lineHeight: 1.2,
           }}
@@ -120,7 +120,7 @@ export default function SplashScreen() {
         style={{
           fontSize: 12,
           fontWeight: 400,
-          color: "rgba(243,237,227,0.4)",
+          color: "rgba(26,26,26,0.4)",
           letterSpacing: "0.02em",
           marginBottom: 28,
         }}
@@ -140,9 +140,9 @@ export default function SplashScreen() {
           justifyContent: "center",
         }}
       >
-        <span className="splash-dot" style={{ animationDelay: "0ms" }} />
-        <span className="splash-dot" style={{ animationDelay: "200ms" }} />
-        <span className="splash-dot" style={{ animationDelay: "400ms" }} />
+        <span className="splash-dot" style={{ animationDelay: "0ms", background: "rgba(26,26,26,0.3)" }} />
+        <span className="splash-dot" style={{ animationDelay: "200ms", background: "rgba(26,26,26,0.3)" }} />
+        <span className="splash-dot" style={{ animationDelay: "400ms", background: "rgba(26,26,26,0.3)" }} />
       </div>
 
       {/* Error state */}
@@ -156,21 +156,21 @@ export default function SplashScreen() {
             transform: "translateX(-50%)",
             padding: "8px 20px",
             borderRadius: 8,
-            border: "1px solid rgba(58,45,36,0.5)",
-              background: "rgba(26,20,16,0.6)",
-              color: "rgba(243,237,227,0.6)",
+            border: "1px solid #E5E5E5",
+            background: "#F9F9F9",
+            color: "#666666",
             fontSize: 13,
             fontWeight: 500,
             cursor: "pointer",
             transition: "background 200ms, color 200ms",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(26,20,16,0.8)";
-            e.currentTarget.style.color = "rgba(243,237,227,0.8)";
+            e.currentTarget.style.background = "#F0F0F0";
+            e.currentTarget.style.color = "#333333";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(26,20,16,0.6)";
-            e.currentTarget.style.color = "rgba(243,237,227,0.6)";
+            e.currentTarget.style.background = "#F9F9F9";
+            e.currentTarget.style.color = "#666666";
           }}
         >
           Continue
